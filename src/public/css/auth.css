@@ -1,0 +1,49 @@
+.main {
+    width: 100%;
+}
+
+.inner-title {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+.content {
+    width: 80%;
+    margin:0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content:space-between;
+    width: 100%;
+}
+
+.header-title {
+    width: 70%;
+    background-color: #000;
+}
+
+.header-nav {
+    width: 30%;
+    background-color: #000;
+}
+
+/*
+.header-nav-list {
+    display: flex;
+    justify-content: space-around;
+    padding-left: 0;
+}
+
+.header-nav-item {
+    color: #FFF;
+    list-style: none;
+}
+*/
+
+.register-button {
+    width: 100%;
+    color: #FFF;
+    background-color: #000;
+}

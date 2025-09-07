@@ -1,0 +1,32 @@
+.email-container {
+    margin-bottom: 10px;
+}
+
+.password-container {
+    margin-bottom: 10px;
+}
+
+.email-input {
+    width: 100%;
+    border: 1px solid #000;
+}
+
+.password-input {
+    width: 100%;
+    border: 1px solid #000;
+}
+
+.register-button {
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.login-transition {
+    width: 100%;
+}
+
+.login-transition {
+    display: block;
+    width: 25%;
+    margin:0 auto;
+}
