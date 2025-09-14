@@ -74,7 +74,7 @@ class FortifyServiceProvider extends ServiceProvider
             return null;
         });
 
-        $this->app->bind(FortifyLoginRequest::class, LoginRequest::class);
+        app()->bind(FortifyLoginRequest::class, LoginRequest::class);
 
     }
 }

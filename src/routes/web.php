@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminAttendanceController;
-use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisteredController;
+use App\Http\Controllers\AttendanceController;
 
 
 /*
@@ -22,13 +22,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/attendance', [AttendanceController::class, 'index']);
 
-/*
-Route::get('/admin/login', [LoginController::class, 'create'])->name('admin.login');
-Route::post('/admin/login', [LoginController::class, 'store']);
-Route::get('/admin/attendance/list', [AdminAttendanceController::class, 'index'])->middleware('auth:admin');
-*/
 
 Route::prefix('admin')->group(function () {
     Route::get('login', [LoginController::class, 'create'])->name('admin.login');
@@ -42,6 +36,4 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-Route::middleware(['auth:web', 'verified'])->get('/attendance', function () {
-    return view('attendance');
-})->name('attendance');
+Route::middleware(['auth:web', 'verified'])->get('/attendance', [AttendanceController::class, 'index']);

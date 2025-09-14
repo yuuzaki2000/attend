@@ -1,0 +1,20 @@
+.container {
+    width:100%;
+}
+
+.status {
+    text-align: center;
+}
+
+.date {
+    text-align: center;
+}
+
+.time {
+    text-align: center;
+}
+
+.button {
+    width:5%;
+    margin:0 auto;
+}
