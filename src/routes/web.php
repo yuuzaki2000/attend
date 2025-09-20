@@ -18,12 +18,6 @@ use App\Http\Controllers\AttendanceController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
-
 Route::prefix('admin')->group(function () {
     Route::get('login', [LoginController::class, 'create'])->name('admin.login');
     Route::post('login', [LoginController::class, 'store']);
@@ -36,4 +30,10 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-Route::middleware(['auth:web', 'verified'])->get('/attendance', [AttendanceController::class, 'index']);
+Route::middleware(['auth:web', 'verified'])->group(function(){
+    Route::get('/attendance', [AttendanceController::class, 'index'])->name('guest.attendance.index');
+    Route::post('/attendance', [AttendanceController::class, 'update']);
+    Route::post('/break/in', [AttendanceController::class, 'takeBreak']);
+    /*Route::post('/break/out', [AttendanceController::class, 'leaveBreak']);*/
+    Route::get('/attendance/list', [AttendanceController::class, 'getList']);
+});

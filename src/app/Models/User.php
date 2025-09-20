@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Status;
+use App\Models\Worktime;
 
 class User extends Authenticatable
 {
@@ -45,5 +46,9 @@ class User extends Authenticatable
 
     public function status(){
         return $this->hasOne(Status::class);
+    }
+
+    public function worktimes(){
+        return $this->hasMany(Worktime::class);
     }
 }
