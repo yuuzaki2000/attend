@@ -32,8 +32,13 @@ Route::prefix('admin')->group(function () {
 
 Route::middleware(['auth:web', 'verified'])->group(function(){
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('guest.attendance.index');
-    Route::post('/attendance', [AttendanceController::class, 'update']);
+    Route::post('/work/start', [AttendanceController::class, 'startWork']);
+    Route::post('/work/end', [AttendanceController::class, 'endWork']);
     Route::post('/break/in', [AttendanceController::class, 'takeBreak']);
-    /*Route::post('/break/out', [AttendanceController::class, 'leaveBreak']);*/
+    Route::post('/break/out', [AttendanceController::class, 'leaveBreak']);
     Route::get('/attendance/list', [AttendanceController::class, 'getList']);
 });
+
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->name('verification.notice');

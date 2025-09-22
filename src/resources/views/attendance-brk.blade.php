@@ -11,9 +11,11 @@
     <div class="date-section"><p class="date">{{$current_date}}</p></div>
     <div class="time-section"><p class="time">{{$current_time}}</p></div>
     <div class="button-section">
-        <div class="button-section__inner">
+        <form class="button-section__inner" action="/break/out" method="post">
+        @csrf
+            <input type="text" name="breaktimeId" value={{$breaktimeId}}>
             <button>休憩戻</button>
-        </div>
+        </form>
     </div>
 </div>
 @endsection

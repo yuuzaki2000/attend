@@ -12,6 +12,7 @@ use App\Models\Breaktime;
 class AttendanceController extends Controller
 {
     //
+    /*
     public function index(){
         $current_time = Carbon::now()->format('H:i');
         $current_date = Carbon::now()->format('Y-m-d');
@@ -30,19 +31,29 @@ class AttendanceController extends Controller
 
         switch($status_atd){
             case "勤務外":
-                return view('attendance-off', compact('current_time', 'current_date'));
+                $data = [
+                    'current_time' => $current_time,
+                    'current_date' => $current_date,
+                    'breaktimeId' => null,
+                ];
+                return view('attendance-off', $data);
                 break;
             case "勤務中":
-                return view('attendance-atd', compact('current_time', 'current_date'));
+                $data = [
+                    'current_time' => $current_time,
+                    'current_date' => $current_date,
+                    'breaktimeId' => null,
+                ];
+                return view('attendance-atd', $data);
                 break;
             case "休憩中":
-                return view('attendance-brk', compact('current_time', 'current_date'));
+                return view('attendance-brk', $data);
                 break;
             case "退勤済":
-                return view('attendance-end', compact('current_time', 'current_date'));
+                return view('attendance-end', $data);
                 break;
             default:
-                return view('attendance-off', compact('current_time', 'current_date'));
+                return view('attendance-off', $data);
                 break;
         }
 
@@ -67,7 +78,6 @@ class AttendanceController extends Controller
                     'user_id' => Auth::user()->id,
                     'start_time' => $current_time,
                     'end_time' => null,
-                    'breaktime_id' => null,
                 ];
 
                 Status::where('user_id', Auth::user()->id)->update($status_data);
@@ -100,20 +110,36 @@ class AttendanceController extends Controller
     public function takeBreak(){
         $current_time = Carbon::now()->format('H:i');
         $current_date = Carbon::now()->format('Y-m-d');
+
+        
         $breaktime_data = [
             'start_time' => $current_time,
             'end_time' => null,
-        ];
+        ]; 
 
         $status_data = [
             'content' => '休憩中',
         ];
+
+        $breaktime = new Breaktime();
+        $breaktime->start_time = $current_time;
+        $breaktime->end_time = null;
+        $breaktime->worktime_id = Worktime::where('user_id', Auth::user()->id)->first()->id;
+        $breaktime->save();
+        $breaktimeId = $breaktime->id;
+
+        $data = [
+            'current_time' => $current_time,
+            'current_date' => $current_date,
+            'breaktimeId' => $breaktimeId,
+        ];
+
         Breaktime::create($breaktime_data);
         Status::where('user_id', Auth::user()->id)->update($status_data);
-        return redirect()->route('guest.attendance.index', compact('current_time', 'current_date'));
+        return redirect()->route('guest.attendance.index', $data);
     }
 
-    public function leaveBreak(){
+    public function leaveBreak(Request $request){
         $current_time = Carbon::now()->format('H:i');
         $current_date = Carbon::now()->format('Y-m-d');
         $breaktime_data = [
@@ -124,9 +150,170 @@ class AttendanceController extends Controller
             'content' => '勤務中',
         ];
 
-        Worktime::where('user_id', Auth::user()->id)->first()->breaktime;
+        $breaktimeId = Breaktime::find($request->breaktimeId)->update($breaktime_data);
         Status::where('user_id', Auth::user()->id)->update($status_data);
-        return redirect()->route('guest.attendance.index', compact('current_time', 'current_date'));
+
+        $data = [
+            'current_time' => $current_time,
+            'current_date' => $current_date,
+            'breaktimeId' => $breaktimeId,
+        ];
+        return redirect()->route('guest.attendance.index', $data);
+    }  */
+
+    public function index(Request $request){
+        $current_time = Carbon::now()->format('H:i');
+        $current_date = Carbon::now()->format('Y-m-d');
+        $status = Status::where('user_id', Auth::user()->id)->first();
+        if($status == null){
+            $status_data = [
+                'user_id' => Auth::user()->id,
+                'date' => $current_date,
+                'content' => '勤務外',
+            ];
+            Status::create($status_data);
+            $status_atd = '勤務外';
+        }else{
+            $status_atd = $status->content;
+        }
+
+        switch($status_atd){
+            case "勤務外":
+                $data = [
+                    'current_time' => $current_time,
+                    'current_date' => $current_date,
+                ];
+                return view('attendance-off', $data);
+                break;
+            case "勤務中":
+                $data = [
+                    'current_time' => $current_time,
+                    'current_date' => $current_date,
+                    'worktimeId' => $request->worktimeId,
+                ];
+                return view('attendance-atd', $data);
+                break;
+            case "休憩中":
+                    $data = [
+                        'current_time' => $current_time,
+                        'current_date' => $current_date,
+                        'breaktimeId' => $request->breaktimeId,
+                    ];
+                    return view('attendance-brk', $data);
+                    break;
+            case "退勤済":
+                    $data = [
+                        'current_time' => $current_time,
+                        'current_date' => $current_date,
+                    ];
+                    return view('attendance-end', $data);
+            default:
+                $data = [
+                    'current_time' => $current_time,
+                    'current_date' => $current_date,
+                    'breaktimeId' => null,
+                ];
+                return view('attendance', $data);
+                break;
+        }
+    }
+    
+    public function startWork(){
+        $current_time = Carbon::now()->format('H:i');
+        $current_date = Carbon::now()->format('Y-m-d');
+
+        $worktime = new Worktime();
+        $worktime->date = $current_date;
+        $worktime->user_id = Auth::user()->id;
+        $worktime->start_time = $current_time;
+        $worktime->end_time = null;
+        $worktime->save();
+        $worktimeId = $worktime->id;
+
+        $data = [
+            'current_time' => $current_time,
+            'current_date' => $current_date,
+            'worktimeId' => $worktimeId,
+        ];
+
+        $status_data = [
+            'content' => '勤務中',
+        ];
+
+        Status::where('user_id', Auth::user()->id)->update($status_data);
+
+        return redirect()->route('guest.attendance.index', $data);
+    }
+
+    public function endWork(Request $request){
+        $current_time = Carbon::now()->format('H:i');
+        $current_date = Carbon::now()->format('Y-m-d');
+        $worktime_data = [
+            'end_time' => $current_time,
+        ];
+
+        $status_data = [
+            'content' => "退勤済"
+        ];
+
+        $data = [
+                    'current_time' => $current_time,
+                    'current_date' => $current_date,
+        ];
+
+        Worktime::find($request->worktimeId)->update($worktime_data);
+        Status::where('user_id', Auth::user()->id)->update($status_data);
+        return redirect()->route('guest.attendance.index', $data);
+    }
+
+    public function takeBreak(Request $request){
+        $current_time = Carbon::now()->format('H:i');
+        $current_date = Carbon::now()->format('Y-m-d');
+
+        $breaktime = new Breaktime();
+        $breaktime->start_time = $current_time;
+        $breaktime->end_time = null;
+        $breaktime->worktime_id = $request->worktimeId;
+        $breaktime->save();
+        $breaktimeId = $breaktime->id;
+
+        $data = [
+            'current_time' => $current_time,
+            'current_date' => $current_date,
+            'breaktimeId' => $breaktimeId,
+        ];
+
+        $status_data = [
+            'content' => '休憩中',
+        ];
+
+        Status::where('user_id', Auth::user()->id)->update($status_data);
+
+        return redirect()->route('guest.attendance.index', $data);
+    }
+
+    public function leaveBreak(Request $request){
+        $current_time = Carbon::now()->format('H:i');
+        $current_date = Carbon::now()->format('Y-m-d');
+        $worktimeId = Worktime::where('user_id', Auth::user()->id)->first()->id;
+
+        $breaktime_data = [
+            'end_time' => $current_time,
+        ];
+
+        $status_data = [
+            'content' => '勤務中',
+        ];
+
+        $data = [
+            'current_time' => $current_time,
+            'current_date' => $current_date,
+            'worktimeId' => $worktimeId,
+        ];
+
+        Breaktime::find($request->breaktimeId)->update($breaktime_data);
+        Status::where('user_id', Auth::user()->id)->update($status_data);
+        return redirect()->route('guest.attendance.index', $data);
     }
 
     public function getList(){

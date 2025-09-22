@@ -17,6 +17,7 @@ class CreateBreaktimesTable extends Migration
             $table->id();
             $table->time('start_time');
             $table->time('end_time')->nullable();
+            $table->foreignId('worktime_id')->constrained()->cascadeOnDelete();
             $table->timestamp('created_at')->useCurrent()->nullable();
             $table->timestamp('updated_at')->useCurrent()->nullable();
         });

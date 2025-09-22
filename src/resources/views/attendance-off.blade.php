@@ -11,7 +11,7 @@
     <div class="date-section"><p class="date">{{$current_date}}</p></div>
     <div class="time-section"><p class="time">{{$current_time}}</p></div>
     <div class="button-section">
-        <form class="button-section__inner" action="/attendance" method="post">
+        <form class="button-section__inner" action="/work/start" method="post">
         @csrf
             <button>出勤</button>
         </form>

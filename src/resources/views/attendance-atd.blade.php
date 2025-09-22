@@ -12,12 +12,14 @@
     <div class="time-section"><p class="time">{{$current_time}}</p></div>
     <div class="button-section">
         <div class="button-section__inner">
-            <form action="/attendance" method="post">
+            <form action="/work/end" method="post">
             @csrf
+                <input type="hidden" name="worktimeId" value="{{$worktimeId}}">
                 <button>退勤</button>
             </form>
             <form action="/break/in" method="post">
             @csrf
+                <input type="hidden" name="worktimeId" value="{{$worktimeId}}">
                 <button>休憩入</button>
             </form>
         </div>
