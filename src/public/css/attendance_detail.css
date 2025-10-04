@@ -1,6 +1,6 @@
 .container {
     width: 100%;
-    height: 580px;
+    height: 50vw;
     background-color: #F0EFF2;
 }
 .main {
@@ -8,13 +8,21 @@
 }
 
 .inner-title {
-    text-align: center;
     margin-top: 20px;
     margin-bottom: 15px;
+    margin-left: 20%;
 }
 
 .content {
-    width: 100%;
+    width: 60%;
+    background-color: #FFF;
+    border-radius:3vh;
+    margin:0 auto;
+}
+
+th, td {
+    padding: 20px 105px 15px 30px;
+    border-bottom: 1px solid #F0EFF2;
 }
 
 .header {
@@ -42,14 +50,6 @@
 .header-nav-item {
     color: #FFF;
     list-style: none;
-}
-
-.attendance-button {
-    color:#FFF;
-}
-
-.attendance-list-button {
-    color:#FFF;
 }
 
 .logout-button {

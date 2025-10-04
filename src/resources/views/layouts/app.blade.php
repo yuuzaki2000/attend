@@ -9,32 +9,39 @@
     @yield('css')
 </head>
 <body>
-    <div class="header">
-        <div class="header-title">
-            <img src="{{asset('img/logo.svg')}}" alt="ロゴ">
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <img src="{{asset('img/logo.svg')}}" alt="ロゴ">
+            </div>
+            <nav class="header-nav">
+                <ul class="header-nav-list">
+                    <li class="header-nav-item">
+                        <form action="/attendance" method="get">
+                        @csrf
+                            <button class="attendance-button">勤怠</button>
+                        </form>
+                    </li>
+                    <li class="header-nav-item">
+                        <form action="/attendance/list" method="get">
+                        @csrf
+                            <button class="attendance-list-button">勤怠一覧</button>
+                        </form>
+                    </li>
+                    <li class="header-nav-item">申請</li>
+                    <li class="header-nav-item">
+                        <form action="/logout" method="post">
+                        @csrf
+                            <button class="logout-button">ログアウト</button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
         </div>
-        <nav class="header-nav">
-            <ul class="header-nav-list">
-                <li class="header-nav-item">勤怠</li>
-                <li class="header-nav-item">
-                    <form action="/attendance/list" method="get">
-                    @csrf
-                        <button class="logout-button">勤怠一覧</button>
-                    </form>
-                </li>
-                <li class="header-nav-item">申請</li>
-                <li class="header-nav-item">
-                    <form action="/logout" method="post">
-                    @csrf
-                        <button class="logout-button">ログアウト</button>
-                    </form>
-                </li>
-            </ul>
-        </nav>
-    </div>
-    <div class="main">
-        <h2 class="inner-title">@yield('title')</h2>
-        <div class="content">@yield('content')</div>
+        <div class="main">
+            <h2 class="inner-title">@yield('title')</h2>
+            <div class="content">@yield('content')</div>
+        </div>
     </div>
 </body>
 </html>

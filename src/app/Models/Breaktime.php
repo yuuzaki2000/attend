@@ -14,7 +14,7 @@ class Breaktime extends Model
 
     public function worktime()
     {
-        return $this->belongsTo(Worktime::class);
+        return $this->has(Worktime::class);
     }
 
 }

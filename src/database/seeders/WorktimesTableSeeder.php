@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use App\Models\Admin;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
-class AdminsTableSeeder extends Seeder
+class WorktimesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

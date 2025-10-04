@@ -1,0 +1,32 @@
+.month-select-container {
+    display: flex;
+    justify-content: center;
+}
+
+.month-select-bar {
+    width:80%;
+    margin-bottom:40px;
+    background-color: #FFF;
+    text-align: center;
+}
+
+.attendance-table-container {
+    display:flex;
+    justify-content:center;
+}
+
+.attendance-table {
+    border-collapse:collapse;
+    background-color:#FFFFFF;
+    width:80%;
+}
+
+.attendance-header {
+    border-bottom:1px solid black;
+    border-collapse:collapse;
+    text-align: center;
+}
+
+.attendance-data {
+    text-align: center;
+}

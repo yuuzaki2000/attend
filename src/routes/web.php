@@ -26,6 +26,7 @@ Route::prefix('admin')->group(function () {
 
     Route::middleware('auth:admin')->group(function () {
         Route::get('/attendance/list', [AdminAttendanceController::class, 'index'])->name('admin.attendance.list');
+        Route::get('/attendance/detail', [AdminAttendanceController::class, 'getDetail']);
         Route::post('/logout', [LoginController::class, 'destroy']);
     });
 });
@@ -37,6 +38,7 @@ Route::middleware(['auth:web', 'verified'])->group(function(){
     Route::post('/break/in', [AttendanceController::class, 'takeBreak']);
     Route::post('/break/out', [AttendanceController::class, 'leaveBreak']);
     Route::get('/attendance/list', [AttendanceController::class, 'getList']);
+    Route::get('/attendance/detail', [AttendanceController::class, 'getDetail']);
 });
 
 Route::get('/email/verify', function () {
