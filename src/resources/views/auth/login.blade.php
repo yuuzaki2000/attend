@@ -13,7 +13,7 @@
 @csrf
     <div class="email-container">
         <div><p class="email-text">メールアドレス</p></div>
-        <input type="text" class="email-input" name="email">
+        <input type="text" class="email-input" name="email" value="{{old('email')}}">
     </div>
     @error('email')
     <div>

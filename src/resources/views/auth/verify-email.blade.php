@@ -1,20 +1,19 @@
 @extends('layouts.auth')
 
 @section('css')
-<link rel="stylesheet" href="{{asset('email_verification.css')}}">
+<link rel="stylesheet" href="{{asset('css/verify_email.css')}}">
 @endsection
 
 @section('content')
 <div class="container">
-    <div>
-        <p>verify-email.blade.php</p>
-        <p>登録していただいたメールアドレスに認証メールを送付しました。</p>
-        <p>メールに認証を完了してください。</p>
+    <div class="comment-group">
+        <p class="comment-upper">登録していただいたメールアドレスに認証メールを送付しました。</p>
+        <p class="comment-bottom">メールに認証を完了してください。</p>
     </div>
-    <div><a href="https://mailtrap.io/inboxes/3822474/messages">認証はこちらから</a></div>
+    <div><a href="{{env('MY_INBOX_URL')}}" class="verification">認証はこちらから</a></div>
     <form action="/email/verification-notification" method="post">
     @csrf
-        <button>認証メールを再送する</button>
+        <button class="resend">認証メールを再送する</button>
     </form>
 </div>
 @endsection

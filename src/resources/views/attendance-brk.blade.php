@@ -13,7 +13,7 @@
     <div class="button-section">
         <form class="button-section__inner" action="/break/out" method="post">
         @csrf
-            <input type="text" name="breaktimeId" value={{$breaktimeId}}>
+            <input type="hidden" name="breaktimeId" value={{$breaktimeId}}>
             <button>休憩戻</button>
         </form>
     </div>

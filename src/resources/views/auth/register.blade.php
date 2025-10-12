@@ -13,14 +13,14 @@
 @csrf
     <div class="name-container">
         <div class="name-text"><p>名前</p></div>
-        <input type="text" class="name-input" name="name">
+        <input type="text" class="name-input" name="name" value="{{old('name')}}">
     </div>
     @error('name')
     <div><p>{{$errors->first('name')}}</p></div>
     @enderror
     <div class="email-container">
         <div><p class="email-text">メールアドレス</p></div>
-        <input type="email" class="email-input" name="email">
+        <input type="email" class="email-input" name="email" value="{{old('email')}}">
     </div>
     @error('email')
     <div><p>{{$errors->first('email')}}</p></div>

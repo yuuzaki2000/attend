@@ -25,8 +25,13 @@
                 $workEndTime = \Carbon\Carbon::parse($worktime->end_time);
                 $diffWorkHourTime = $workStartTime->diffInHours($workEndTime);
                 $diffWorkMinuteTime = $workStartTime->diffinMinutes($workEndTime) % 60;
-                $breakStartTime = \Carbon\Carbon::parse(optional($worktime->breaktime)->start_time);
-                $breakEndTime = \Carbon\Carbon::parse(optional($worktime->breaktime)->end_time);
+                if(count($worktime->breaktimes) !== 0){
+                    foreach($worktime->breaktimes as $breaktime){
+                    $breakStartTime = \Carbon\Carbon::parse($breaktime->start_time);
+                    $breakEndTime = \Carbon\Carbon::parse($breaktime->end_time);
+                    }
+                }else{
+                }
                 $diffBreakHourTime = $breakStartTime->diffInHours($breakEndTime);
                 $diffBreakMinuteTime = $breakStartTime->diffinMinutes($breakEndTime) % 60;
                 $workTime = \Carbon\Carbon::parse($diffWorkHourTime . ":" . $diffWorkMinuteTime . ":00");
@@ -40,7 +45,12 @@
                 <td class="attendance-data">{{$workEndTime->format("H:i")}}</td>
                 <td class="attendance-data">{{$breakTime->format("H:i")}}</td>
                 <td class="attendance-data">{{$totalTime->format("H:i")}}</td>
-                <td class="attendance-data"></td>
+                <td class="attendance-data">
+                    <form action="/attendance/detail/{{$worktime->id}}" method="get">
+                    @csrf
+                        <button type="submit">詳細</button>
+                    </form>
+                </td>
             </tr>
             @endforeach
         </table>

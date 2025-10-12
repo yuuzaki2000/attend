@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorktimesTable extends Migration
+class CreateApplicationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateWorktimesTable extends Migration
      */
     public function up()
     {
-        Schema::create('worktimes', function (Blueprint $table) {
+        Schema::create('applications', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->time('start_time');
-            $table->time('end_time')->nullable();
+            $table->foreignId('worktime_id')->constrained('worktimes')->cascadeOnDelete();
+            $table->foreignId('temp_worktime_id')->constrained('temp_worktimes')->cascadeOnDelete();
+            $table->string('reason');
             $table->timestamp('created_at')->useCurrent()->nullable();
             $table->timestamp('updated_at')->useCurrent()->nullable();
         });
@@ -31,6 +30,6 @@ class CreateWorktimesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('worktimes');
+        Schema::dropIfExists('applications');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorktimesTable extends Migration
+class CreateTempWorktimesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateWorktimesTable extends Migration
      */
     public function up()
     {
-        Schema::create('worktimes', function (Blueprint $table) {
+        Schema::create('temp_worktimes', function (Blueprint $table) {
             $table->id();
             $table->date('date');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
@@ -31,6 +31,6 @@ class CreateWorktimesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('worktimes');
+        Schema::dropIfExists('temp_worktimes');
     }
 }

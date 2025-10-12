@@ -135,14 +135,9 @@ class AttendanceController extends Controller
         $breaktime = new Breaktime();
         $breaktime->start_time = $current_time;
         $breaktime->end_time = null;
+        $breaktime->worktime_id = $request->worktimeId;
         $breaktime->save();
         $breaktimeId = $breaktime->id;
-
-        $worktime_data = [
-            'breaktime_id' => $breaktimeId,
-        ];
-
-        Worktime::find($request->worktimeId)->update($worktime_data);
 
         $data = [
             'current_time' => $current_time,
@@ -184,21 +179,29 @@ class AttendanceController extends Controller
     }
 
     public function getList(){
-        $current_time = Carbon::now()->format('H:i');
-        $current_date = Carbon::now()->format('Y-m-d');
+        /*$current_time = Carbon::now()->format('H:i');
+        $current_date = Carbon::now()->format('Y-m-d'); */
 
         $worktimes = Worktime::where('user_id', Auth::user()->id)
                     ->whereYear('date', Carbon::now()->year)
                     ->whereMonth('date', Carbon::now()->month)
                     ->orderBy('date', 'asc')
                     ->whereNotNull('end_time')
-                    ->whereNotNull('breaktime_id')
                     ->get();
 
         return view('attendance-list', compact('worktimes'));
     }
 
-    public function getDetail(){
-        return view('attendance-detail');
+    public function getDetail($id){
+        $current_time = Carbon::now()->format('H:i');
+        $current_date = Carbon::now()->format('Y-m-d');
+        $worktime = Worktime::find($id);
+        return view('attendance-detail', compact('worktime'));
+    }
+
+    public function getApplicationList()
+    {
+        $worktimes = Worktime::where('user_id', Auth::id())->get();
+        return view('application', compact('worktimes'));
     }
 }

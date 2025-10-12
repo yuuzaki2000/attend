@@ -16,7 +16,7 @@ class Worktime extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function breaktime(){
-        return $this->belongsTo(Breaktime::class);
+    public function breaktimes(){
+        return $this->hasMany(Breaktime::class);
     }
 }
