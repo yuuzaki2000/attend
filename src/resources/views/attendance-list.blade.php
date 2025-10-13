@@ -6,7 +6,9 @@
 
 @section('content')
     <div class="month-select-container">
-        <div class="month-select-bar">2025年10月</div>
+        <div><button>前月{{\Carbon\Carbon::now()->subMonth()->format('Y年m月')}}</button></div>
+        <div class="month-select-bar">{{\Carbon\Carbon::now()->format('Y年m月')}}</div>
+        <div><button>翌月</button></div>
     </div>
     <div class="attendance-table-container">
         <table class="attendance-table">
@@ -23,28 +25,28 @@
                 @php
                 $workStartTime = \Carbon\Carbon::parse($worktime->start_time);
                 $workEndTime = \Carbon\Carbon::parse($worktime->end_time);
-                $diffWorkHourTime = $workStartTime->diffInHours($workEndTime);
-                $diffWorkMinuteTime = $workStartTime->diffinMinutes($workEndTime) % 60;
+                $totalBreakTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);
+
                 if(count($worktime->breaktimes) !== 0){
                     foreach($worktime->breaktimes as $breaktime){
                     $breakStartTime = \Carbon\Carbon::parse($breaktime->start_time);
                     $breakEndTime = \Carbon\Carbon::parse($breaktime->end_time);
+                    //laravel8では、CarbonIntervalにならず、DateIntervalになることがあるので、instanceメソッドで補正
+                    $breakTimeInterval = \Carbon\CarbonInterval::instance($breakStartTime->diff($breakEndTime));
+                    $totalBreakTimeInterval->add($breakTimeInterval);
                     }
                 }else{
                 }
-                $diffBreakHourTime = $breakStartTime->diffInHours($breakEndTime);
-                $diffBreakMinuteTime = $breakStartTime->diffinMinutes($breakEndTime) % 60;
-                $workTime = \Carbon\Carbon::parse($diffWorkHourTime . ":" . $diffWorkMinuteTime . ":00");
-                $breakTime = \Carbon\Carbon::parse($diffBreakHourTime . ":" . $diffBreakMinuteTime . ":00");
-                $diffTotalHourTime = $breakTime->diffInHours($workTime);
-                $diffTotalMinuteTime = $breakTime->diffInMinutes($workTime) % 60;
-                $totalTime = \Carbon\Carbon::parse($diffTotalHourTime . ":" . $diffTotalMinuteTime . ":00");
+
+                $workTimeInterval = \Carbon\CarbonInterval::instance($workStartTime->diff($workEndTime));
+                $attendanceTimeInterval = $workTimeInterval->totalMinutes - $totalBreakTimeInterval->totalMinutes;
+                $combined = \Carbon\CarbonInterval::minutes($attendanceTimeInterval)->cascade();
                 @endphp
                 <td class="attendance-data">{{$worktime->date}}</td>
                 <td class="attendance-data">{{$workStartTime->format("H:i")}}</td>
                 <td class="attendance-data">{{$workEndTime->format("H:i")}}</td>
-                <td class="attendance-data">{{$breakTime->format("H:i")}}</td>
-                <td class="attendance-data">{{$totalTime->format("H:i")}}</td>
+                <td class="attendance-data">{{$totalBreakTimeInterval->format('%h:%i')}}</td>
+                <td class="attendance-data">{{$combined->format('%h:%i')}}</td>
                 <td class="attendance-data">
                     <form action="/attendance/detail/{{$worktime->id}}" method="get">
                     @csrf

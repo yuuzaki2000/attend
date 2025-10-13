@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminAttendanceController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisteredController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ApplicationController;
 
 
 /*
@@ -26,7 +27,6 @@ Route::prefix('admin')->group(function () {
 
     Route::middleware('auth:admin')->group(function () {
         Route::get('/attendance/list', [AdminAttendanceController::class, 'getList'])->name('admin.attendance.list');
-        /* Route::get('/attendance/detail', [AdminAttendanceController::class, 'getDetail']); */
         Route::get('/attendance/detail/{id}', [AdminAttendanceController::class, 'getDetail']);
         Route::post('/attendance/detail/{id}', [AdminAttendanceController::class, 'update']);
         Route::post('/logout', [LoginController::class, 'destroy']);
@@ -42,7 +42,10 @@ Route::middleware(['auth:web', 'verified'])->group(function(){
     Route::get('/attendance/list', [AttendanceController::class, 'getList']);
     //
     Route::get('/attendance/detail/{id}', [AttendanceController::class, 'getDetail']);
+    Route::post('/attendance/detail/{id}', [AttendanceController::class, 'update']);
 });
+
+Route::get('/stamp_correction_request/list', [ApplicationController::class, 'getApplicationList']);
 
 Route::get('/email/verify', function () {
     return view('auth.verify-email');

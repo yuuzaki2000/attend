@@ -9,7 +9,11 @@ use App\Models\User;
 class Status extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'date', 'content'];
+    protected $fillable = [
+        'user_id',
+        'date',
+        'content',
+    ];
 
     public function user(){
         return $this->belongsTo(User::class);

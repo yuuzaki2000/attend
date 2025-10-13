@@ -4,10 +4,10 @@
 <link rel="stylesheet" href="{{asset('css/attendance_detail.css')}}">
 @endsection
 @section('title')
-❚　勤怠詳細
+<div class="inner-title">❚　勤怠詳細</div>
 @endsection
 @section('content')
-    <form action="/admin/attendance/detail/{{$worktime->id}}" method="post">
+    <form class="container" action="/attendance/detail/{{$worktime->id}}" method="post">
     @csrf
         <div class="table-container">
             <table>
@@ -32,12 +32,16 @@
                     <td class="table-data">～</td>
                     <td class="table-data"><input class="input" type="text" name="workEndTime" value={{$worktime->end_time}}></td>
                 </tr>
+                @if (count($worktime->breaktimes) > 0)
+                @foreach ($worktime->breaktimes as $breaktime)
                 <tr class="table-row">
                     <th class="table-header">休憩</th>
-                    <td class="table-data"><input class="input" type="text" name="breakStartTime" value={{optional($worktime->breaktime)->start_time}}></td>
+                    <td class="table-data"><input class="input" type="text" name="breakStartTime[]" value={{$breaktime->start_time}}></td>
                     <td class="table-data">～</td>
-                    <td class="table-data"><input class="input" type="text" name="breakEndTime" value={{optional($worktime->breaktime)->end_time}}></td>
+                    <td class="table-data"><input class="input" type="text" name="breakEndTime[]" value={{$breaktime->end_time}}></td>
                 </tr>
+                @endforeach
+                @endif
                 <tr class="table-row">
                     <th class="table-header">備考</th>
                     <td class="table-data" colspan="3"></td>
@@ -45,7 +49,7 @@
             </table>
         </div>
         <div class="update-button-container">
-            <button>修正</button>
+            <button class="update-button">修正</button>
         </div>
     </form>
 @endsection

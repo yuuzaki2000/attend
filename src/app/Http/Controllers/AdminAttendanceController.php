@@ -29,8 +29,6 @@ class AdminAttendanceController extends Controller
     }
 
     public function update(Request $request, $id){
-        $request->workStartTime;
-        $request->workEndTime;
         $worktime = Worktime::find($id);
         $worktime->update([
             'start_time' => $request->workStartTime,

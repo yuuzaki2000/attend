@@ -17,7 +17,7 @@ class CreateApplicationsTable extends Migration
             $table->id();
             $table->foreignId('worktime_id')->constrained('worktimes')->cascadeOnDelete();
             $table->foreignId('temp_worktime_id')->constrained('temp_worktimes')->cascadeOnDelete();
-            $table->string('reason');
+            $table->string('reason')->nullable();
             $table->timestamp('created_at')->useCurrent()->nullable();
             $table->timestamp('updated_at')->useCurrent()->nullable();
         });

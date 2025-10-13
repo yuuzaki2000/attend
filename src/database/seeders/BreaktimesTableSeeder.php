@@ -16,12 +16,5 @@ class BreaktimesTableSeeder extends Seeder
     public function run()
     {
         //
-        /*
-        $data = [
-            'start_time' => Carbon::createFromTime(12, 0, 0),
-            'end_time' => Carbon::createFromTime(13, 0, 0),
-        ];
-        DB::table('breaktimes')->insert($data);
-        */
     }
 }

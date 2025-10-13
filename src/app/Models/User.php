@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Status;
 use App\Models\Worktime;
+use App\Models\TempWorktime;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -50,5 +51,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function worktimes(){
         return $this->hasMany(Worktime::class);
+    }
+
+    public function tempWorktimes(){
+        return $this->hasMany(TempWorktime::class);
     }
 }

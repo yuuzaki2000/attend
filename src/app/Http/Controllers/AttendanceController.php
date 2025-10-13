@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Status;
 use App\Models\Worktime;
 use App\Models\Breaktime;
+use App\Models\TempWorktime;
+use App\Models\Application;
+
 
 class AttendanceController extends Controller
 {
@@ -198,10 +201,22 @@ class AttendanceController extends Controller
         $worktime = Worktime::find($id);
         return view('attendance-detail', compact('worktime'));
     }
+    //
+    public function update(Request $request, $id){
+        $worktime = Worktime::find($id);
+        $temp_worktime = new TempWorktime();
+        $temp_worktime->date = $worktime->date;
+        $temp_worktime->user_id = $worktime->user_id;
+        $temp_worktime->start_time = $request->workStartTime;
+        $temp_worktime->end_time = $request->workEndTime;
+        $temp_worktime->save();
+        $temp_worktimeId = $temp_worktime->id;
 
-    public function getApplicationList()
-    {
-        $worktimes = Worktime::where('user_id', Auth::id())->get();
-        return view('application', compact('worktimes'));
+        $application = new Application();
+        $application->worktime_id = $id;
+        $application->temp_worktime_id = $temp_worktimeId;
+        $application->reason = $request->reason;
+        $application->save();
+        return redirect('/attendance/list');
     }
 }
