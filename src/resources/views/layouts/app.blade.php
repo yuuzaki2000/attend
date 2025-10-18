@@ -28,7 +28,12 @@
                             <button class="attendance-list-button">勤怠一覧</button>
                         </form>
                     </li>
-                    <li class="header-nav-item">申請</li>
+                    <li class="header-nav-item">
+                        <form action="/stamp_correction_request/list" method="get">
+                        @csrf
+                            <button class="application-button">申請</button>
+                        </form>
+                    </li>
                     <li class="header-nav-item">
                         <form action="/logout" method="post">
                         @csrf

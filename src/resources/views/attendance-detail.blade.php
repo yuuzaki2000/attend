@@ -30,7 +30,7 @@
                     <th class="table-header">出勤・退勤</th>
                     <td class="table-data"><input class="input" type="text" name="workStartTime" value={{\Carbon\Carbon::create($worktime->start_time)->format('H:i')}}></td>
                     <td class="table-data">～</td>
-                    <td class="table-data"><input class="input" type="text" name="workEndTime" value={{$worktime->end_time}}></td>
+                    <td class="table-data"><input class="input" type="text" name="workEndTime" value={{\Carbon\Carbon::create($worktime->end_time)->format('H:i')}}></td>
                 </tr>
                 @if (count($worktime->breaktimes) > 0)
                 @foreach ($worktime->breaktimes as $breaktime)
@@ -44,7 +44,9 @@
                 @endif
                 <tr class="table-row">
                     <th class="table-header">備考</th>
-                    <td class="table-data" colspan="3"></td>
+                    <td class="table-data" colspan="3">
+                        <textarea name="reason" cols="50" rows="3"></textarea>
+                    </td>
                 </tr>
             </table>
         </div>

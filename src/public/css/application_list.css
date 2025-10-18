@@ -4,6 +4,10 @@
     align-items: center;
 }
 
+.tab-group {
+    display: flex;
+}
+
 .table-container {
     background-color: #FFF;
     width: 75%;

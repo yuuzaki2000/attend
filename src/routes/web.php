@@ -40,7 +40,7 @@ Route::middleware(['auth:web', 'verified'])->group(function(){
     Route::post('/break/in', [AttendanceController::class, 'takeBreak']);
     Route::post('/break/out', [AttendanceController::class, 'leaveBreak']);
     Route::get('/attendance/list', [AttendanceController::class, 'getList']);
-    //
+    Route::post('/attendance/list', [AttendanceController::class, 'getPreviousMonthList']);
     Route::get('/attendance/detail/{id}', [AttendanceController::class, 'getDetail']);
     Route::post('/attendance/detail/{id}', [AttendanceController::class, 'update']);
 });

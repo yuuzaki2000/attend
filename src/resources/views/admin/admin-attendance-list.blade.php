@@ -41,7 +41,7 @@
                 $combined = \Carbon\CarbonInterval::minutes($attendanceTimeInterval)->cascade();
                 @endphp
                 <td class="attendance-data">{{$worktime->user->name}}</td>
-                <td class="attendance-data">{{$workStartTime->format("H:i")}}</td>
+                <td class="attendance-data">{{$workStartTime?$workStartTime->format("H:i"): null}}</td>
                 <td class="attendance-data">{{$workEndTime->format("H:i")}}</td>
                 <td class="attendance-data">{{$totalBreakTimeInterval->format('%h:%i')}}</td>
                 <td class="attendance-data">{{$combined->format('%h:%i')}}</td>

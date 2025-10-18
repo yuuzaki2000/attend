@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Worktime;
 use Illuminate\Support\Collection;
+use App\Models\Application;
 
 class ApplicationController extends Controller
 {

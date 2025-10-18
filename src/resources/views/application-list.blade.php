@@ -10,6 +10,20 @@
 
 @section('content')
 <div class="container">
+    <div class="tab-group">
+        <div>
+            <form action="/stamp_correction_request/list" method="get">
+                <input type="hidden" name="page" value="pendingApproval">
+                <button type="submit">承認待ち</button>
+            </form>
+        </div>
+        <div>
+            <form action="/stamp_correction_request/list" method="get">
+                <input type="hidden" name="page" value="pendingApproval">
+                <button type="submit">承認済み</button>
+            </form>
+        </div>
+    </div>
     <div class="header">application-list.blade.php</div>
     <div class="table-container">
         <table>

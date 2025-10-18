@@ -11,7 +11,6 @@ class AdminAttendanceController extends Controller
 {
     //
     public function getList(){
-        /*$current_time = Carbon::now()->format('H:i');  */
         $current_date = Carbon::now()->format('Y-m-d');
         $worktimes = Worktime::where('date', $current_date)
                 ->orderBy('date', 'asc')
@@ -50,7 +49,7 @@ class AdminAttendanceController extends Controller
 
     public function getApplicationList()
     {
-        $worktimes = Worktime::all();
+        //申請テーブルのデータに紐づいているworktime_idをすべて集めて、bladeファイルに渡す
         return view('application', compact('worktimes'));
     }
 }
