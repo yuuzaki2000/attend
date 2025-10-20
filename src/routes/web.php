@@ -27,10 +27,18 @@ Route::prefix('admin')->group(function () {
 
     Route::middleware('auth:admin')->group(function () {
         Route::get('/attendance/list', [AdminAttendanceController::class, 'getList'])->name('admin.attendance.list');
-        Route::get('/attendance/detail/{id}', [AdminAttendanceController::class, 'getDetail']);
-        Route::post('/attendance/detail/{id}', [AdminAttendanceController::class, 'update']);
+        Route::get('/attendance/list/previous', [AdminAttendanceController::class, 'getPreviousDate']);
+        Route::get('/attendance/list/later', [AdminAttendanceController::class, 'getLaterDate']);
+        Route::get('/attendance/{id}', [AdminAttendanceController::class, 'getDetail']);
+        Route::post('/attendance/{id}', [AdminAttendanceController::class, 'update']);
+        Route::get('/staff/list', [AdminAttendanceController::class, 'getStaffList']);
+        /*Route::get('/stamp_correction_request/list', [AdminAttendanceController::class, 'getApplicationList']);*/
         Route::post('/logout', [LoginController::class, 'destroy']);
     });
+});
+
+Route::middleware('auth:admin')->group(function(){
+    Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceController::class, 'getApproval']);
 });
 
 Route::middleware(['auth:web', 'verified'])->group(function(){
@@ -43,6 +51,7 @@ Route::middleware(['auth:web', 'verified'])->group(function(){
     Route::post('/attendance/list', [AttendanceController::class, 'getPreviousMonthList']);
     Route::get('/attendance/detail/{id}', [AttendanceController::class, 'getDetail']);
     Route::post('/attendance/detail/{id}', [AttendanceController::class, 'update']);
+    /*Route::get('/stamp_correction_request/list', [AttendanceController::class, 'getApplicationList']);*/
 });
 
 Route::get('/stamp_correction_request/list', [ApplicationController::class, 'getApplicationList']);

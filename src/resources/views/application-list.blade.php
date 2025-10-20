@@ -35,14 +35,16 @@
                 <th>申請日時</th>
                 <th>詳細</th>
             </tr>
+            @foreach ($appliedWorktimes as $appliedWorktime)
             <tr>
-                <td>承認待ち</td>
-                <td>西伶奈</td>
-                <td>2023/06/01</td>
-                <td>遅延のため</td>
-                <td>2023/06/02</td>
-                <td>詳細</td>
-            </tr>
+                <td>承認判定なし</td>
+                <td>{{$appliedWorktime->user->name}}</td>
+                <td>{{$appliedWorktime->date}}</td>
+                <td>{{$appliedWorktime->application->reason}}</td>
+                <td>{{$appliedWorktime->application->created_at}}</td>
+                <td>詳細なし</td>
+            </tr>                
+            @endforeach
         </table>
     </div>
 </div>    

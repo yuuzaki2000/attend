@@ -30,23 +30,52 @@
                 $worktime = App\Models\Worktime::where('date', $day->format('Y-m-d'))->first();
                 if($worktime){
                     $startTime = $worktime->start_time;
+                    $endTime = $worktime->end_time;
                 }else{
                     $startTime = null;
+                    $endTime = null;
                 }
+                //totalBreakTimeIntervalの計算
+                $totalBreakTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);
+
+                if($worktime){
+                    $breaktimes = App\Models\Breaktime::where('worktime_id', $worktime->id)->get();
+
+                    foreach($breaktimes as $breaktime){
+                        $breakStartTime = \Carbon\Carbon::create($breaktime->start_time);
+                        $breakEndTime = \Carbon\Carbon::create($breaktime->end_time);
+                        $breakTimeInterval = $breakStartTime->diff($breakEndTime);
+                        $totalBreakTimeInterval->add($breakTimeInterval);
+                    }
+                }else{
+                }
+
+                if($worktime){
+                    $workStartTime = \Carbon\Carbon::create($worktime->start_time);
+                    $workEndTime = \Carbon\Carbon::create($worktime->end_time);
+                    $workTimeInterval = \Carbon\CarbonInterval::instance($workStartTime->diff($workEndTime));
+                    $attendanceTimeInterval = $workTimeInterval->subtract($totalBreakTimeInterval);
+                }else{
+                    $attendanceTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);;
+                }
+
                 //配列の書き方で、breaktimeのデータを検索する
-                //worktimeのidはEloquentでとってくる
                 @endphp
                 <td class="attendance-data">{{$day->format('Y/m/d')}}</td>
                 <td class="attendance-data">{{$startTime}}</td>
-                <td class="attendance-data">17:00</td>
-                <td class="attendance-data">1:00</td>
-                <td class="attendance-data">1:00</td>
+                <td class="attendance-data">{{$endTime}}</td>
+                <td class="attendance-data">{{$totalBreakTimeInterval->format('%h:%i')}}</td>
+                <td class="attendance-data">{{$attendanceTimeInterval->format('%h:%i')}}</td>
+                @if($worktime)
                 <td class="attendance-data">
-                    <form action="" method="get">
+                    <form action="/attendance/detail/{{$worktime->id}}" method="get">
                     @csrf
                         <button type="submit">詳細</button>
                     </form>
                 </td>
+                @else
+                <td class="attendance-data">詳細</td>
+                @endif
             </tr>
             @endforeach
         </table>

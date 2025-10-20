@@ -21,8 +21,18 @@
                         <button class="attendance-button">勤怠一覧</button>
                     </form>
                 </li>
-                <li class="header-nav-item">スタッフ一覧</li>
-                <li class="header-nav-item">申請一覧</li>
+                <li class="header-nav-item">
+                    <form action="/admin/staff/list" method="get">
+                    @csrf
+                        <button class="attendance-button">スタッフ一覧</button>
+                    </form>
+                </li>
+                <li class="header-nav-item">
+                    <form action="/stamp_correction_request/list" method="get">
+                    @csrf
+                        <button class="attendance-button">申請一覧</button>
+                    </form>
+                </li>
                 <li class="header-nav-item">
                     <form action="/admin/logout" method="post">
                     @csrf

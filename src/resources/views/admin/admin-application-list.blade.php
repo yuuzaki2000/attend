@@ -10,7 +10,7 @@
 
 @section('content')
 <div class="container">
-    <div class="header">admin-application.blade.php</div>
+    <div class="header">admin-application-list.blade.php</div>
     <div class="table-container">
         <table>
             <tr>
@@ -28,7 +28,12 @@
                 <td>{{$appliedWorktime->date}}</td>
                 <td>{{$appliedWorktime->application->reason}}</td>
                 <td>{{$appliedWorktime->application->created_at}}</td>
-                <td>詳細なし</td>
+                <td class="attendance-data">
+                    <form action="/stamp_correction_request/approve/{{$appliedWorktime->id}}" method="get">
+                    @csrf
+                        <button type="submit">詳細</button>
+                    </form>
+                </td>
             </tr>                
             @endforeach
         </table>

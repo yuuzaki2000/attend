@@ -11,6 +11,8 @@ use App\Models\Breaktime;
 use App\Models\TempWorktime;
 use App\Models\Application;
 use App\Models\TempBreaktime;
+use Illuminate\Support\Collection;
+
 
 
 
@@ -236,7 +238,7 @@ class AttendanceController extends Controller
         return redirect('/attendance/list');
     }
 
-    public function getDetail($id){
+    public function getDetail($id = 'default'){
         $current_time = Carbon::now()->format('H:i');
         $current_date = Carbon::now()->format('Y-m-d');
         $worktime = Worktime::find($id);
@@ -271,5 +273,22 @@ class AttendanceController extends Controller
         }
         
         return redirect('/attendance/list');
+    }
+
+    public function getApplicationList(){
+        $worktimes = Worktime::where('user_id', Auth::user()->id)->get();
+        $appliedWorktimes = new Collection();
+
+        foreach($worktimes as $worktime){
+            if($worktime->application !== null){
+                $application = Application::where('worktime_id', $worktime->id)
+                                ->orderBy('created_at', 'desc')
+                                ->first();
+                $particularWorktime = Worktime::find($application->worktime_id);
+                $appliedWorktimes->push($particularWorktime);
+            }
+        }
+        
+        return view('application-list', compact('appliedWorktimes'));
     }
 }

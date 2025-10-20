@@ -1,0 +1,19 @@
+.title-container {
+    margin-left: 200px;
+}
+
+.table-container {
+    width:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.table {
+    width: 60%;
+    background-color: #FFF;
+}
+
+.data {
+    text-align: center;
+}

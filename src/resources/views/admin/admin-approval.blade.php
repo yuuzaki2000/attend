@@ -1,13 +1,13 @@
 @extends('layouts.admin-app')
 
 @section('css')
-<link rel="stylesheet" href="{{asset('css/attendance_detail.css')}}">
+<link rel="stylesheet" href="{{asset('css/admin_approval.css')}}">
 @endsection
 @section('title')
 ❚　勤怠詳細
 @endsection
 @section('content')
-    <form class="table-container" action="/admin/attendance/{{$worktime->id}}" method="post">
+    <form class="table-container" action="" method="post">
     @csrf
             <table>
                 <tr class="table-row">

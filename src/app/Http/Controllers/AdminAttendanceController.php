@@ -6,18 +6,39 @@ use Illuminate\Http\Request;
 use App\Models\Worktime;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
+
 
 class AdminAttendanceController extends Controller
 {
     //
     public function getList(){
-        $current_date = Carbon::now()->format('Y-m-d');
-        $worktimes = Worktime::where('date', $current_date)
+        $particularDate = Carbon::now();
+
+        $worktimes = Worktime::where('date', $particularDate->format('Y-m-d'))
                 ->orderBy('date', 'asc')
                 ->whereNotNull('end_time')
                 ->get();
                 
-        return view('admin.admin-attendance-list', compact('worktimes'));
+        return view('admin.admin-attendance-list', compact('worktimes', 'particularDate'));
+    }
+
+    public function getPreviousDate(Request $request){
+        $particularDate = Carbon::parse($request->previousParticularDate);
+        $worktimes = Worktime::where('date', $particularDate->format('Y-m-d'))
+                ->orderBy('date', 'asc')
+                ->whereNotNull('end_time')
+                ->get();
+        return view('admin.admin-attendance-list', compact('worktimes','particularDate'));
+    }
+
+    public function getLaterDate(Request $request){
+        $particularDate = Carbon::parse($request->laterParticularDate);
+        $worktimes = Worktime::where('date', $particularDate->format('Y-m-d'))
+                ->orderBy('date', 'asc')
+                ->whereNotNull('end_time')
+                ->get();
+        return view('admin.admin-attendance-list', compact('worktimes','particularDate'));
     }
 
     public function getDetail($id){
@@ -47,9 +68,24 @@ class AdminAttendanceController extends Controller
         return redirect('/admin/attendance/list');
     }
 
-    public function getApplicationList()
-    {
-        //申請テーブルのデータに紐づいているworktime_idをすべて集めて、bladeファイルに渡す
-        return view('application', compact('worktimes'));
+    public function getApplicationList(){
+        $worktimes = Worktime::all();
+        $appliedWorktimes = new Collection();
+
+        foreach($worktimes as $worktime){
+            if($worktime->application !== null){
+                $appliedWorktimes->push($worktime);
+            }
+        }
+        
+        return view('admin.admin-application-list', compact('appliedWorktimes'));
+    }
+
+    public function getApproval($attendance_correct_request){
+        return view('admin.admin-approval');
+    }
+
+    public function getStaffList(){
+        return view('admin.staff-list');
     }
 }

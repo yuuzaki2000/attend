@@ -5,9 +5,20 @@
 @endsection
 
 @section('content')
+    <div>admin-attendance-list.blade.php</div>
+    <form action="/admin/attendance/list/previous" method="get">
+    @csrf
+        <input type="hidden" name="previousParticularDate" value={{$particularDate->copy()->subDay()->toDateString()}}>
+        <button type="submit">前日</button>
+    </form>
     <div class="month-select-container">
-        <div class="month-select-bar">2025年10月5日</div>
+        <div class="month-select-bar">{{$particularDate->format('Y年m月d日')}}</div>
     </div>
+    <form action="/admin/attendance/list/later" method="get">
+    @csrf
+        <input type="hidden" name="laterParticularDate" value={{$particularDate->copy()->addDay()->toDateString()}}>
+        <button type="submit">翌日</button>
+    </form>
     <div class="attendance-table-container">
         <table class="attendance-table">
             <tr>
@@ -21,8 +32,8 @@
             @foreach ($worktimes as $worktime)
             <tr>
                 @php
-                $workStartTime = \Carbon\Carbon::parse($worktime->start_time);
-                $workEndTime = \Carbon\Carbon::parse($worktime->end_time);
+                $workStartTime = \Carbon\Carbon::create($worktime->start_time);
+                $workEndTime = \Carbon\Carbon::create($worktime->end_time);
                 $totalBreakTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);
 
                 if(count($worktime->breaktimes) !== 0){
@@ -46,7 +57,7 @@
                 <td class="attendance-data">{{$totalBreakTimeInterval->format('%h:%i')}}</td>
                 <td class="attendance-data">{{$combined->format('%h:%i')}}</td>
                 <td class="attendance-data">
-                    <form action="/admin/attendance/detail/{{$worktime->id}}" method="get">
+                    <form action="/admin/attendance/{{$worktime->id}}" method="get">
                     @csrf
                         <button type="submit">詳細</button>
                     </form>
