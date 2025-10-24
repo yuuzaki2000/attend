@@ -18,6 +18,7 @@ use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Http\Requests\LoginRequest;
 use App\Responses\AdminLoginResponse;
+use Illuminate\Support\Facades\Auth;
 
 
 class LoginController extends Controller
@@ -48,7 +49,7 @@ class LoginController extends Controller
      */
     public function create()
     {
-        return view('auth.admin-login', ['guard' => 'admin']);
+        return view('auth.admin-login');
     }
 
     /**

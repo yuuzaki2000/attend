@@ -19,6 +19,16 @@ use Illuminate\Support\Collection;
 class AttendanceController extends Controller
 {
     //
+    private function getDatesOfMonth($year, $month){
+        $dates = [];
+        $particularDate = Carbon::create($year, $month, 1);
+        $numberOfDays = $particularDate->daysInMonth;
+        for($i=0; $i<$numberOfDays; $i++){
+            $date = $particularDate->copy()->startOfMonth()->addDays($i);
+            $dates[] = $date;
+        }
+        return $dates;
+    }
 
     public function index(Request $request){
         $current_time = Carbon::now()->format('H:i');
@@ -185,35 +195,25 @@ class AttendanceController extends Controller
         return redirect()->route('guest.attendance.index', $data);
     }
 
+    /*
     public function getList(){
+
+        $particularDate = Carbon::now();
         $sameYearAndMonthFullWorktimes = Worktime::where('user_id', Auth::user()->id)
-                    ->whereYear('date', Carbon::now()->year)
-                    ->whereMonth('date', Carbon::now()->month)
+                    ->whereYear('date', $particularDate->year)
+                    ->whereMonth('date', $particularDate->month)
                     ->whereNotNull('end_time')
                     ->get();
 
-        $numberOfDays = Carbon::now()->daysInMonth;
+        $numberOfDays = $particularDate->daysInMonth;
 
+        //copy()必要←startOfMonth()に癖があるため
         $days = [];
         for($i = 0; $i<$numberOfDays; $i++){
-            $day = Carbon::now()->startOfMonth()->addDays($i);
+            $day = $particularDate->copy()->startOfMonth()->addDays($i);
             $days[] = $day;
         }
-
-        return view('attendance-list', compact('days'));
-    }
-
-    public function getPreviousMonthList(Request $request){
-        $standardDay = $request->standardDay;
-        $standardDayTime = Carbon::parse($standardDay);
-        $numberOfDays = $standardDayTime->daysInMonth;
-
-        $days = [];
-        for($i=0; $i<$numberOfDays; $i++){
-            $day = $standardDayTime->startOfMonth()->addDays($i);
-            $days[] = $day;
-        };
-
+        //foreach($worktimes as $worktime)をまわして、revisedWorkTimeArray(連想配列)を作成 
         $worktimes = collect();
 
         foreach($days as $day){
@@ -221,9 +221,10 @@ class AttendanceController extends Controller
                     ->where('date', $day->format('Y-m-d'))
                     ->first();
             if($worktime !== null){
-                $worktimes->push($worktime);
+                $worktimes->push($worktime->attributesToArray());
             }else{
                 $revisedWorktime = [
+                    'id' => null,
                     'user_id' => Auth::id(),
                     'date' => $day->format('Y-m-d'),
                     'start_time' => null,
@@ -235,10 +236,102 @@ class AttendanceController extends Controller
             }
         }
 
-        return redirect('/attendance/list');
+        dd($worktimes);
+
+        return view('attendance-list', compact('worktimes','particularDate'));
+    } */
+
+    public function getPreviousMonthList(Request $request){
+        $particularDate = Carbon::parse($request->monthPreviousParticularDate);
+
+        $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
+
+        $revisedWorktimeArray = collect();
+
+        foreach($dates as $date){
+            $worktime = Worktime::where('user_id', Auth::id())
+                    ->where('date', $date->format('Y-m-d'))
+                    ->first();
+            if($worktime !== null){
+                $revisedWorktimeArray->push($worktime->attributesToArray());
+            }else{
+                $revisedWorktime = [
+                    'id' => null,
+                    'user_id' => Auth::id(),
+                    'date' => $date->format('Y-m-d'),
+                    'start_time' => null,
+                    'end_time' => null,
+                    'created_at' => null,
+                    'updated_at' => null,
+                ];
+                $revisedWorktimeArray->push($revisedWorktime);
+            }
+        }
+
+        return view('attendance-list', compact('particularDate', 'revisedWorktimeArray'));
     }
 
-    public function getDetail($id = 'default'){
+    public function getLaterMonthList(Request $request){
+        $particularDate = Carbon::parse($request->monthLaterParticularDate);
+
+        $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
+
+        $revisedWorktimeArray = collect();
+
+        foreach($dates as $date){
+            $worktime = Worktime::where('user_id', Auth::id())
+                    ->where('date', $date->format('Y-m-d'))
+                    ->first();
+            if($worktime !== null){
+                $revisedWorktimeArray->push($worktime->attributesToArray());
+            }else{
+                $revisedWorktime = [
+                    'id' => null,
+                    'user_id' => Auth::id(),
+                    'date' => $date->format('Y-m-d'),
+                    'start_time' => null,
+                    'end_time' => null,
+                    'created_at' => null,
+                    'updated_at' => null,
+                ];
+                $revisedWorktimeArray->push($revisedWorktime);
+            }
+        }
+
+        return view('attendance-list', compact('particularDate', 'revisedWorktimeArray'));
+    }
+
+    public function getList(){
+        $particularDate = Carbon::now();
+
+        $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
+
+        $revisedWorktimeArray = collect();
+
+        foreach($dates as $date){
+            $worktime = Worktime::where('user_id', Auth::id())
+                    ->where('date', $date->format('Y-m-d'))
+                    ->first();
+            if($worktime !== null){
+                $revisedWorktimeArray->push($worktime->attributesToArray());
+            }else{
+                $revisedWorktime = [
+                    'id' => null,
+                    'user_id' => Auth::id(),
+                    'date' => $date->format('Y-m-d'),
+                    'start_time' => null,
+                    'end_time' => null,
+                    'created_at' => null,
+                    'updated_at' => null,
+                ];
+                $revisedWorktimeArray->push($revisedWorktime);
+            }
+        }
+
+        return view('attendance-list', compact('particularDate', 'revisedWorktimeArray'));
+    }
+
+    public function getDetail($id){
         $current_time = Carbon::now()->format('H:i');
         $current_date = Carbon::now()->format('Y-m-d');
         $worktime = Worktime::find($id);

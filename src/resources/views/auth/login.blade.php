@@ -11,6 +11,7 @@
 @section('content')
 <form action="{{route('login')}}" method="post">
 @csrf
+    <input type="hidden" name="guard" value="web">
     <div class="email-container">
         <div><p class="email-text">メールアドレス</p></div>
         <input type="text" class="email-input" name="email" value="{{old('email')}}">

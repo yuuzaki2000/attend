@@ -42,7 +42,12 @@
                 <td>{{$appliedWorktime->date}}</td>
                 <td>{{$appliedWorktime->application->reason}}</td>
                 <td>{{$appliedWorktime->application->created_at}}</td>
-                <td>詳細なし</td>
+                <td class="attendance-data">
+                    <form action="/attendance/detail/{{$appliedWorktime->id}}" method="get">
+                    @csrf
+                        <button type="submit">詳細</button>
+                    </form>
+                </td>
             </tr>                
             @endforeach
         </table>

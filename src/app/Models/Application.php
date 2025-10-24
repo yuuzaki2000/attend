@@ -24,4 +24,8 @@ class Application extends Model
     public function tempWorktime(){
         return $this->belongsTo(TempWorktime::class);
     }
+
+    public function approval(){
+        return $this->hasOne(Approval::class);
+    }
 }

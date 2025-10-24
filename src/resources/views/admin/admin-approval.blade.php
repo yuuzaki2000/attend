@@ -9,6 +9,7 @@
 @section('content')
     <form class="table-container" action="" method="post">
     @csrf
+            <div>admin-approval.blade.php</div>
             <table>
                 <tr class="table-row">
                     <th class="table-header">名前</th>
@@ -47,7 +48,7 @@
                 </tr>
             </table>
             <div>
-                <button type="submit">修正</button>
+                <button type="submit">承認</button>
             </div>        
     </form>
 @endsection

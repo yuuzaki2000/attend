@@ -13,18 +13,7 @@ class ApplicationController extends Controller
     //
     public function getApplicationList()
     {
-        if(Auth::guard('admin')->check()){
-            $worktimes = Worktime::all();
-            $appliedWorktimes = new Collection();
-
-            foreach($worktimes as $worktime){
-                if($worktime->application !== null){
-                    $appliedWorktimes->push($worktime);
-                }
-            }
-            return view('admin.admin-application-list', compact('appliedWorktimes'));
-
-        }else if(Auth::guard('web')->check()){
+        if(Auth::guard('web')->check()){
             $worktimes = Worktime::where('user_id', Auth::user()->id)->get();
             $appliedWorktimes = new Collection();
 
@@ -38,6 +27,17 @@ class ApplicationController extends Controller
                 }
             }
             return view('application-list', compact('appliedWorktimes'));
+
+        }else if(Auth::guard('admin')->check()){
+            $worktimes = Worktime::all();
+            $appliedWorktimes = new Collection();
+
+            foreach($worktimes as $worktime){
+                if($worktime->application !== null){
+                    $appliedWorktimes->push($worktime);
+                }
+            }
+            return view('admin.admin-application-list', compact('appliedWorktimes'));
 
         }else{
             return redirect()->route('login');

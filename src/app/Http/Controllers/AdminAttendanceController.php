@@ -82,7 +82,8 @@ class AdminAttendanceController extends Controller
     }
 
     public function getApproval($attendance_correct_request){
-        return view('admin.admin-approval');
+        $worktime = Worktime::find($attendance_correct_request);
+        return view('admin.admin-approval',compact('worktime'));
     }
 
     public function getStaffList(){
