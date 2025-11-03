@@ -13,7 +13,7 @@
     <div class="button-section">
         <form class="button-section__inner" action="/work/start" method="post">
         @csrf
-            <button>出勤</button>
+            <button class="start-work-button">出勤</button>
         </form>
     </div>
 </div>

@@ -37,6 +37,14 @@
     justify-content: space-around;
 }
 
+.end-button {
+    background-color: chartreuse;
+}
+
+.start-break-button {
+    background-color: aqua;
+}
+
 .button {
     width:5%;
 }

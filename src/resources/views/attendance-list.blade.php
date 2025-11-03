@@ -31,14 +31,15 @@
                 <th class="attendance-header">合計</th>
                 <th class="attendance-header">詳細</th>
             </tr>
-            @foreach ($revisedWorktimeArray as $revisedWorktime)
+            @foreach ($dates as $date)
             <tr>
                 @php
                 //totalBreakTimeIntervalの計算
+                $worktime = \App\Models\Worktime::where('date', $date->format('Y-m-d'))->first();
                 $totalBreakTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);
 
-                if($revisedWorktime['id']){
-                    $breaktimes = App\Models\Breaktime::where('worktime_id', $revisedWorktime['id'])->get();
+                if($worktime !== null){
+                    $breaktimes = App\Models\Breaktime::where('worktime_id', $worktime->id)->get();
 
                     foreach($breaktimes as $breaktime){
                         $breakStartTime = \Carbon\Carbon::create($breaktime->start_time);
@@ -47,27 +48,27 @@
                         $totalBreakTimeInterval->add($breakTimeInterval);
                     }
 
-                    $workStartTime = \Carbon\Carbon::create($revisedWorktime['start_time']);
-                    $workEndTime = \Carbon\Carbon::create($revisedWorktime['end_time']);
+                    $workStartTime = \Carbon\Carbon::create($worktime->start_time);
+                    $workEndTime = \Carbon\Carbon::create($worktime->end_time);
                     $workTimeInterval = \Carbon\CarbonInterval::instance($workStartTime->diff($workEndTime));
                     $attendanceTimeInterval = $workTimeInterval->subtract($totalBreakTimeInterval);
                 }else{
-                    $startTime = null;
-                    $endTime = null;
+                    $workStartTime = null;
+                    $workEndTime = null;
                     $totalBreakTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);
                     $attendanceTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);
                 }
 
                 //配列の書き方で、breaktimeのデータを検索する
                 @endphp
-                <td class="attendance-data">{{$revisedWorktime['date']}}</td>
-                <td class="attendance-data">{{$startTime}}</td>
-                <td class="attendance-data">{{$endTime}}</td>
+                <td class="attendance-data">{{$date->format('Y-m-d')}}</td>
+                <td class="attendance-data">{{$workStartTime?$workStartTime->format('H:i'):null}}</td>
+                <td class="attendance-data">{{$workEndTime?$workEndTime->format('H:i'):null}}</td>
                 <td class="attendance-data">{{$totalBreakTimeInterval->format('%h:%i')}}</td>
                 <td class="attendance-data">{{$attendanceTimeInterval->format('%h:%i')}}</td>
-                @if($revisedWorktime['id'])
+                @if($worktime)
                 <td class="attendance-data">
-                    <form action="/attendance/detail/{{$revisedWorktime['id']}}" method="get">
+                    <form action="/attendance/detail/{{$worktime->id}}" method="get">
                     @csrf
                         <button type="submit">詳細</button>
                     </form>

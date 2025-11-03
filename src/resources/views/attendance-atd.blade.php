@@ -15,12 +15,12 @@
             <form action="/work/end" method="post">
             @csrf
                 <input type="hidden" name="worktimeId" value="{{$worktimeId}}">
-                <button>退勤</button>
+                <button class="end-button">退勤</button>
             </form>
             <form action="/break/in" method="post">
             @csrf
                 <input type="hidden" name="worktimeId" value="{{$worktimeId}}">
-                <button>休憩入</button>
+                <button class="start-break-button">休憩入</button>
             </form>
         </div>
     </div>

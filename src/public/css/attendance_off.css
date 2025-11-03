@@ -37,6 +37,10 @@
     justify-content: center;
 }
 
+.start-work-button {
+    background-color: chartreuse;
+}
+
 .button {
     width:5%;
 }

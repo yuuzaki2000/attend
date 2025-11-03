@@ -19,11 +19,18 @@
             <th>メールアドレス</th>
             <th>月次勤怠</th>
         </tr>
+        @foreach ($users as $user)
         <tr>
-            <td class="data">西伶奈</td>
-            <td class="data">reina.n@gmail.com</td>
-            <td class="data">詳細</td>
+            <td class="data">{{$user->name}}</td>
+            <td class="data">{{$user->email}}</td>
+            <td class="data">
+                <form action="/admin/attendance/staff/{{$user->id}}" method="get">
+                @csrf
+                    <button type="submit">詳細</button>
+                </form>
+            </td>
         </tr>
+        @endforeach
     </table>
 </div>
     

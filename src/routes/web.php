@@ -30,15 +30,17 @@ Route::prefix('admin')->group(function () {
         Route::get('/attendance/list/previous', [AdminAttendanceController::class, 'getPreviousDate']);
         Route::get('/attendance/list/later', [AdminAttendanceController::class, 'getLaterDate']);
         Route::get('/attendance/{id}', [AdminAttendanceController::class, 'getDetail']);
-        Route::post('/attendance/{id}', [AdminAttendanceController::class, 'update']);
+        Route::post('/attendance/{id?}', [AdminAttendanceController::class, 'update']);
         Route::get('/staff/list', [AdminAttendanceController::class, 'getStaffList']);
+        Route::get('/attendance/staff/{id}', [AdminAttendanceController::class, 'getStaffAttendanceList']);
         Route::post('/logout', [LoginController::class, 'destroy']);
     });
 });
 
-/*Route::middleware('auth:admin')->group(function(){
-    Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceController::class, 'getApproval']);
-});*/
+Route::middleware('auth:admin')->group(function(){
+    Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceController::class, 'getApprovalPage']);
+    Route::post('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceController::class, 'approve']);
+});
 
 Route::middleware(['auth:web', 'verified'])->group(function(){
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('guest.attendance.index');

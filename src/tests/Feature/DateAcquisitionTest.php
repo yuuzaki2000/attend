@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 
 class DateAcquisitionTest extends TestCase
@@ -22,7 +23,7 @@ class DateAcquisitionTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
-            'password' => bcrypt('password')
+            'password' => Hash::make('password')
         ]);
 
         $this->actingAs($user);

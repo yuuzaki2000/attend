@@ -6,15 +6,17 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class UserRegisterTest.php extends TestCase
+class BreakTest extends TestCase
 {
     /**
      * A basic feature test example.
      *
      * @return void
      */
-    public function test_user_can_register()
+    public function test_example()
     {
-        
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
     }
 }

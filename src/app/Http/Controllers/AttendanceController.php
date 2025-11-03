@@ -12,6 +12,9 @@ use App\Models\TempWorktime;
 use App\Models\Application;
 use App\Models\TempBreaktime;
 use Illuminate\Support\Collection;
+use App\Models\Approval;
+use Illuminate\Support\Facades\DB;
+
 
 
 
@@ -195,52 +198,6 @@ class AttendanceController extends Controller
         return redirect()->route('guest.attendance.index', $data);
     }
 
-    /*
-    public function getList(){
-
-        $particularDate = Carbon::now();
-        $sameYearAndMonthFullWorktimes = Worktime::where('user_id', Auth::user()->id)
-                    ->whereYear('date', $particularDate->year)
-                    ->whereMonth('date', $particularDate->month)
-                    ->whereNotNull('end_time')
-                    ->get();
-
-        $numberOfDays = $particularDate->daysInMonth;
-
-        //copy()必要←startOfMonth()に癖があるため
-        $days = [];
-        for($i = 0; $i<$numberOfDays; $i++){
-            $day = $particularDate->copy()->startOfMonth()->addDays($i);
-            $days[] = $day;
-        }
-        //foreach($worktimes as $worktime)をまわして、revisedWorkTimeArray(連想配列)を作成 
-        $worktimes = collect();
-
-        foreach($days as $day){
-            $worktime = Worktime::where('user_id', Auth::id())
-                    ->where('date', $day->format('Y-m-d'))
-                    ->first();
-            if($worktime !== null){
-                $worktimes->push($worktime->attributesToArray());
-            }else{
-                $revisedWorktime = [
-                    'id' => null,
-                    'user_id' => Auth::id(),
-                    'date' => $day->format('Y-m-d'),
-                    'start_time' => null,
-                    'end_time' => null,
-                    'created_at' => null,
-                    'updated_at' => null,
-                ];
-                $worktimes->push($revisedWorktime);
-            }
-        }
-
-        dd($worktimes);
-
-        return view('attendance-list', compact('worktimes','particularDate'));
-    } */
-
     public function getPreviousMonthList(Request $request){
         $particularDate = Carbon::parse($request->monthPreviousParticularDate);
 
@@ -268,7 +225,7 @@ class AttendanceController extends Controller
             }
         }
 
-        return view('attendance-list', compact('particularDate', 'revisedWorktimeArray'));
+        return view('attendance-list', compact('particularDate', 'revisedWorktimeArray','dates'));
     }
 
     public function getLaterMonthList(Request $request){
@@ -298,7 +255,7 @@ class AttendanceController extends Controller
             }
         }
 
-        return view('attendance-list', compact('particularDate', 'revisedWorktimeArray'));
+        return view('attendance-list', compact('particularDate', 'revisedWorktimeArray', 'dates'));
     }
 
     public function getList(){
@@ -306,29 +263,7 @@ class AttendanceController extends Controller
 
         $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
 
-        $revisedWorktimeArray = collect();
-
-        foreach($dates as $date){
-            $worktime = Worktime::where('user_id', Auth::id())
-                    ->where('date', $date->format('Y-m-d'))
-                    ->first();
-            if($worktime !== null){
-                $revisedWorktimeArray->push($worktime->attributesToArray());
-            }else{
-                $revisedWorktime = [
-                    'id' => null,
-                    'user_id' => Auth::id(),
-                    'date' => $date->format('Y-m-d'),
-                    'start_time' => null,
-                    'end_time' => null,
-                    'created_at' => null,
-                    'updated_at' => null,
-                ];
-                $revisedWorktimeArray->push($revisedWorktime);
-            }
-        }
-
-        return view('attendance-list', compact('particularDate', 'revisedWorktimeArray'));
+        return view('attendance-list', compact('dates', 'particularDate'));
     }
 
     public function getDetail($id){
@@ -339,49 +274,48 @@ class AttendanceController extends Controller
     }
     //
     public function update(Request $request, $id){
-        $worktime = Worktime::find($id);
-        $temp_worktime = new TempWorktime();
-        $temp_worktime->date = $worktime->date;
-        $temp_worktime->user_id = Auth::user()->id;
-        $temp_worktime->start_time = $request->workStartTime;
-        $temp_worktime->end_time = $request->workEndTime;
-        $temp_worktime->save();
-        $tempWorktimeId = $temp_worktime->id;
 
-        $application = new Application();
-        $application->worktime_id = $id;
-        $application->temp_worktime_id = $tempWorktimeId;
-        $application->reason = $request->reason;
-        $application->save();
 
-        if(count($worktime->breaktimes) > 0){
-            for($i=0; $i<count($worktime->breaktimes); $i++){
-                $temp_breaktime = new TempBreaktime();
-                $temp_breaktime->start_time = $request->breakStartTime[$i];
-                $temp_breaktime->end_time = $request->breakEndTime[$i];
-                $temp_breaktime->temp_worktime_id = $tempWorktimeId;
-                $temp_breaktime->save();
+        try{
+            DB::beginTransaction();
+
+            $worktime = Worktime::find($id);
+            $temp_worktime = new TempWorktime();
+            $temp_worktime->date = $worktime->date;
+            $temp_worktime->user_id = Auth::user()->id;
+            $temp_worktime->start_time = $request->workStartTime;
+            $temp_worktime->end_time = $request->workEndTime;
+            $temp_worktime->save();
+            $tempWorktimeId = $temp_worktime->id;
+
+            if(count($worktime->breaktimes) > 0){
+                for($i=0; $i<count($worktime->breaktimes); $i++){
+                    $temp_breaktime = new TempBreaktime();
+                    $temp_breaktime->start_time = $request->breakStartTime[$i];
+                    $temp_breaktime->end_time = $request->breakEndTime[$i];
+                    $temp_breaktime->temp_worktime_id = $tempWorktimeId;
+                    $temp_breaktime->save();
+                }
+            }else{
             }
-        }else{
-        }
-        
-        return redirect('/attendance/list');
-    }
 
-    public function getApplicationList(){
-        $worktimes = Worktime::where('user_id', Auth::user()->id)->get();
-        $appliedWorktimes = new Collection();
+            $application = new Application();
+            $application->worktime_id = $id;
+            $application->temp_worktime_id = $tempWorktimeId;
+            $application->reason = $request->reason;
+            $application->save();
+            $applicationId = $application->id;
 
-        foreach($worktimes as $worktime){
-            if($worktime->application !== null){
-                $application = Application::where('worktime_id', $worktime->id)
-                                ->orderBy('created_at', 'desc')
-                                ->first();
-                $particularWorktime = Worktime::find($application->worktime_id);
-                $appliedWorktimes->push($particularWorktime);
-            }
+            $approval = new Approval();
+            $approval->application_id = $applicationId;
+            $approval->is_approved = false;
+            $approval->save();
+
+            DB::commit();
+            return redirect('/attendance/list');
+        }catch(Exception $e){
+            DB::rollback();
+            return redirect()->back()->with('error', "エラーが発生しました");
         }
-        
-        return view('application-list', compact('appliedWorktimes'));
     }
 }

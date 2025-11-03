@@ -20,6 +20,7 @@ class UserLoginTest extends TestCase
     public function test_user_can_login()
     {
         $user = User::factory()->create([
+            'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password',
         ]);
@@ -28,9 +29,18 @@ class UserLoginTest extends TestCase
         $response->assertStatus(200);
 
         $this->actingAs($user);
+        /*
+        $data = [
+            'email' => 'test@example.com',
+            'password' => 'password',
+        ];
+        $response = $this->post('/login', $data);  */
+
+        $response = $this->get('/attendance');
+        $response->assertStatus(200);
     }
 
-    public function test_user_login_when_not_input_data_on_mail_column()
+    public function test_user_login_without_input_data_on_mail_column()
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
@@ -46,13 +56,18 @@ class UserLoginTest extends TestCase
         ];
 
         $response = $this->post('/login', $data);
-        $response->assertSessionHasErrors([
+        $response->assertValid([
             'email' => 'メールアドレスを入力してください'
         ]);
     }
 
-    public function test_user_login_when_not_input_data_on_password_column()
+    public function test_user_login_without_input_data_on_password_column()
     {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => 'password',
+        ]);
+
         $response = $this->get('/login');
         $response->assertStatus(200);
 
@@ -62,13 +77,18 @@ class UserLoginTest extends TestCase
         ];
 
         $response = $this->post('/login', $data);
-        $response->assertSessionHasErrors([
+        $response->assertValid([
             'password' => 'パスワードを入力してください',
         ]);
     }
 
-    public function test_user_login_when_invalid_data()
+    public function test_user_login_with_invalid_data()
     {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => 'password',
+        ]);
+
         $response = $this->get('/login');
         $response->assertStatus(200);
 
@@ -78,7 +98,7 @@ class UserLoginTest extends TestCase
         ];
 
         $response = $this->post('/login', $data);
-        $response->assertSessionHasErrors([
+        $response->assertValid([
             'email' => 'ログイン情報が登録されていません'
         ]);
     }

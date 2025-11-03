@@ -7,20 +7,25 @@
 ❚　勤怠詳細
 @endsection
 @section('content')
-    <form class="table-container" action="" method="post">
+    @php
+        
+    @endphp
+    <form class="table-container" action="/stamp_correction_request/approve/{{$worktime->id}}" method="post">
     @csrf
+            <input type="hidden" name="worktimeId" value="{{$worktime->id}}">
             <div>admin-approval.blade.php</div>
             <table>
+                <input type="hidden" name="tempWorktimeId" value="{{$tempWorktime->id}}">
                 <tr class="table-row">
                     <th class="table-header">名前</th>
-                    <td class="table-data">{{$worktime->user->name}}</td>
+                    <td class="table-data">{{$tempWorktime->user->name}}</td>
                 </tr>
                 <tr class="table-row">
                     <th class="table-header">日付</th>
                     @php
-                        $year = \Carbon\Carbon::create($worktime->date)->year;
-                        $month = \Carbon\Carbon::create($worktime->date)->month;
-                        $day = \Carbon\Carbon::create($worktime->date)->day;
+                        $year = \Carbon\Carbon::create($tempWorktime->date)->year;
+                        $month = \Carbon\Carbon::create($tempWorktime->date)->month;
+                        $day = \Carbon\Carbon::create($tempWorktime->date)->day;
                     @endphp
                     <td class="table-data">{{$year}}年</td>
                     <td class="table-data">{{$month}}月</td>
@@ -28,17 +33,17 @@
                 </tr>
                 <tr class="table-row">
                     <th class="table-header">出勤・退勤</th>
-                    <td class="table-data"><input class="input" type="text" name="workStartTime" value={{\Carbon\Carbon::create($worktime->start_time)->format('H:i')}}></td>
+                    <td class="table-data"><input class="input" type="text" name="workStartTime" value={{\Carbon\Carbon::create($tempWorktime->start_time)->format('H:i')}}></td>
                     <td class="table-data">～</td>
-                    <td class="table-data"><input class="input" type="text" name="workEndTime" value={{\Carbon\Carbon::create($worktime->end_time)->format('H:i')}}></td>
+                    <td class="table-data"><input class="input" type="text" name="workEndTime" value={{\Carbon\Carbon::create($tempWorktime->end_time)->format('H:i')}}></td>
                 </tr>
-                @if (count($worktime->breaktimes) > 0)
-                @foreach ($worktime->breaktimes as $breaktime)
+                @if (count($tempWorktime->tempBreaktimes) > 0)
+                @foreach ($tempWorktime->tempBreaktimes as $tempBreaktime)
                 <tr class="table-row">
                     <th class="table-header">休憩</th>
-                    <td class="table-data"><input class="input" type="text" name="breakStartTime[]" value={{$breaktime->start_time}}></td>
+                    <td class="table-data"><input class="input" type="text" name="breakStartTime[]" value={{$tempBreaktime->start_time}}></td>
                     <td class="table-data">～</td>
-                    <td class="table-data"><input class="input" type="text" name="breakEndTime[]" value={{$breaktime->end_time}}></td>
+                    <td class="table-data"><input class="input" type="text" name="breakEndTime[]" value={{$tempBreaktime->end_time}}></td>
                 </tr>
                 @endforeach
                 @endif

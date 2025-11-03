@@ -23,45 +23,60 @@
         <table class="attendance-table">
             <tr>
                 <th class="attendance-header">名前</th>
-                <th class="attendance-header">開始時間</th>
-                <th class="attendance-header">退勤時間</th>
-                <th class="attendance-header">休憩時間</th>
+                <th class="attendance-header">出勤</th>
+                <th class="attendance-header">退勤</th>
+                <th class="attendance-header">休憩</th>
                 <th class="attendance-header">合計</th>
                 <th class="attendance-header">詳細</th>
             </tr>
-            @foreach ($worktimes as $worktime)
+            @foreach ($users as $user)
             <tr>
                 @php
-                $workStartTime = \Carbon\Carbon::create($worktime->start_time);
-                $workEndTime = \Carbon\Carbon::create($worktime->end_time);
-                $totalBreakTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);
+                $eachWorktime = \App\Models\Worktime::where('user_id', $user->id)
+                                ->where('date', $particularDate->format('Y-m-d'))->first();
+                if($eachWorktime){
+                    $workStartTime = \Carbon\Carbon::create($eachWorktime->start_time);
+                        $workEndTime = \Carbon\Carbon::create($eachWorktime->end_time);
+                        $totalBreakTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);
 
-                if(count($worktime->breaktimes) !== 0){
-                    foreach($worktime->breaktimes as $breaktime){
-                    $breakStartTime = \Carbon\Carbon::parse($breaktime->start_time);
-                    $breakEndTime = \Carbon\Carbon::parse($breaktime->end_time);
-                    //laravel8では、CarbonIntervalにならず、DateIntervalになることがあるので、instanceメソッドで補正
-                    $breakTimeInterval = \Carbon\CarbonInterval::instance($breakStartTime->diff($breakEndTime));
-                    $totalBreakTimeInterval->add($breakTimeInterval);
-                    }
+                        if(count($eachWorktime->breaktimes) !== 0){
+                            foreach($eachWorktime->breaktimes as $breaktime){
+                            $breakStartTime = \Carbon\Carbon::parse($breaktime->start_time);
+                            $breakEndTime = \Carbon\Carbon::parse($breaktime->end_time);
+                            //laravel8では、CarbonIntervalにならず、DateIntervalになることがあるので、instanceメソッドで補正
+                            $breakTimeInterval = \Carbon\CarbonInterval::instance($breakStartTime->diff($breakEndTime));
+                            $totalBreakTimeInterval->add($breakTimeInterval);
+                            }
+                        }else{
+                        }
+
+                    $workTimeInterval = \Carbon\CarbonInterval::instance($workStartTime->diff($workEndTime));
+                    $attendanceTimeInterval = $workTimeInterval->totalMinutes - $totalBreakTimeInterval->totalMinutes;
+                    $combined = \Carbon\CarbonInterval::minutes($attendanceTimeInterval)->cascade();
+
                 }else{
-                }
-
-                $workTimeInterval = \Carbon\CarbonInterval::instance($workStartTime->diff($workEndTime));
-                $attendanceTimeInterval = $workTimeInterval->totalMinutes - $totalBreakTimeInterval->totalMinutes;
-                $combined = \Carbon\CarbonInterval::minutes($attendanceTimeInterval)->cascade();
+                    $workStartTime = null;
+                    $workEndTime = null;
+                    $totalBreakTimeInterval = null;
+                    $combined = null;
+                }                
+                
                 @endphp
-                <td class="attendance-data">{{$worktime->user->name}}</td>
+                <td class="attendance-data">{{$user->name}}</td>
                 <td class="attendance-data">{{$workStartTime?$workStartTime->format("H:i"): null}}</td>
-                <td class="attendance-data">{{$workEndTime->format("H:i")}}</td>
-                <td class="attendance-data">{{$totalBreakTimeInterval->format('%h:%i')}}</td>
-                <td class="attendance-data">{{$combined->format('%h:%i')}}</td>
+                <td class="attendance-data">{{$workEndTime?$workEndTime->format("H:i"):null}}</td>
+                <td class="attendance-data">{{$totalBreakTimeInterval?$totalBreakTimeInterval->format('%h:%i'):null}}</td>
+                <td class="attendance-data">{{$combined?$combined->format('%h:%i'):null}}</td>
+                @if($eachWorktime)
                 <td class="attendance-data">
-                    <form action="/admin/attendance/{{$worktime->id}}" method="get">
+                    <form action="/admin/attendance/{{$eachWorktime->id}}" method="get">
                     @csrf
                         <button type="submit">詳細</button>
                     </form>
                 </td>
+                @else
+                <td class="attendance-data">詳細</td>
+                @endif
             </tr>
             @endforeach
         </table>

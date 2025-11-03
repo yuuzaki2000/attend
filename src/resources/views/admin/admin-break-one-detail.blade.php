@@ -31,16 +31,30 @@
                     <td class="table-data">～</td>
                     <td class="table-data"><input class="input" type="text" name="workEndTime" value={{\Carbon\Carbon::create($worktime->end_time)->format('H:i')}}></td>
                 </tr>
-                @if (count($worktime->breaktimes) > 0)
-                @foreach ($worktime->breaktimes as $breaktime)
+                @error('workStartTime')
+                <tr>
+                    <td>
+                        <p>{{$errors->first('workStartTime')}}</p>
+                    </td>
+                </tr>
+                @enderror
+                @error('workStartWorkEndContext')
+                <tr>
+                    <td>
+                        <p>{{$errors->first('workStartWorkEndTemporalOrder')}}</p>
+                    </td>
+                </tr>
+                @enderror
+                    
+                @php
+                    $breaktime = $worktime->breaktimes[0];
+                @endphp
                 <tr class="table-row">
                     <th class="table-header">休憩</th>
-                    <td class="table-data"><input class="input" type="text" name="breakStartTime[]" value={{\Carbon\Carbon::create($breaktime->start_time)->format('H:i')}}></td>
+                    <td class="table-data"><input class="input" type="text" name="breakStartTime" value={{\Carbon\Carbon::create($breaktime->start_time)->format('H:i')}}></td>
                     <td class="table-data">～</td>
-                    <td class="table-data"><input class="input" type="text" name="breakEndTime[]" value={{\Carbon\Carbon::create($breaktime->end_time)->format('H:i')}}></td>
+                    <td class="table-data"><input class="input" type="text" name="breakEndTime" value={{\Carbon\Carbon::create($breaktime->end_time)->format('H:i')}}></td>
                 </tr>
-                @endforeach
-                @endif
                 <tr class="table-row">
                     <th class="table-header">備考</th>
                     <td class="table-data" colspan="3"></td>
