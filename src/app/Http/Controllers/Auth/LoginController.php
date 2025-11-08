@@ -100,15 +100,16 @@ class LoginController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Laravel\Fortify\Contracts\LogoutResponse
      */
-    public function destroy(Request $request): LogoutResponse
+    public function destroy(Request $request)
     {
         $this->guard->logout();
 
         if ($request->hasSession()) {
+            Auth::guard('admin')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
         }
 
-        return app(LogoutResponse::class);
+        return redirect('/admin/login');
     }
 }

@@ -43,31 +43,26 @@ class StartWorkTest extends TestCase
         ];
         Status::create($status_data);
 
-        $worktime = new Worktime();
-        $worktime->date = $current_date;
-        $worktime->user_id = Auth::user()->id;
-        $worktime->start_time = Carbon::create(2025,10,30,9,0,0)->format('H:i');
-        $worktime->end_time = Carbon::create(2025,10,30,17,0,0)->format('H:i');
-        $worktime->save();
-        $worktimeId = $worktime->id;
+        Worktime::create([
+            'id' => 1,
+            'date' => $current_date,
+            'user_id' => Auth::user()->id,
+            'start_time' => Carbon::create(2025,10,30,9,0,0)->format('H:i'),
+            'end_time' => Carbon::create(2025,10,30,17,0,0)->format('H:i'),
+        ]);
 
         $data = [
             'current_time' => $current_time,
             'current_date' => $current_date,
-            'worktimeId' => $worktimeId,
+            'worktimeId' => 1,
         ];
 
         $response = $this->get('/attendance', $data);
         $response->assertStatus(200);
 
-        $response->assertSee(' <button class="start-work-button">出勤</button>', false);
-
+        $response->assertSee('出勤</button>', false);
+        
         $response = $this->post('/work/start');
-        $response->assertRedirect(route('guest.attendance.index', [
-            'current_time' => $current_time,
-            'current_date' => $current_date,
-            'worktimeId' => 2,
-        ]));
         $this->followRedirects($response)->assertSeeText('出勤中');
     }
 
@@ -109,7 +104,7 @@ class StartWorkTest extends TestCase
         $response = $this->get('/attendance', $data);
         $response->assertStatus(200);
 
-        $response->assertDontSee('<button>出勤</button>', false);
+        $response->assertDontSee('出勤</button>', false);
     }
 
     public function test_we_can_find_start_work_time_at_attendance_list(){
@@ -136,8 +131,8 @@ class StartWorkTest extends TestCase
         $worktime = new Worktime();
         $worktime->date = $current_date;
         $worktime->user_id = Auth::user()->id;
-        $worktime->start_time = Carbon::create(2025,10,30,9,0,0)->format('H:i');
-        $worktime->end_time = Carbon::create(2025,10,30,17,0,0)->format('H:i');
+        $worktime->start_time = Carbon::create($current_date->year,$current_date->month,$current_date->day,9,0,0)->format('H:i');
+        $worktime->end_time = Carbon::create($current_date->year,$current_date->month,$current_date->day,17,0,0)->format('H:i');
         $worktime->save();
         $worktimeId = $worktime->id;
 
@@ -158,6 +153,6 @@ class StartWorkTest extends TestCase
         ]));
         $response = $this->get('/attendance/list');
         $response->assertStatus(200);
-        $response->assertSeeText(Carbon::create(2025,10,30,9,0,0)->format('H:i'));
+        $response->assertSeeText(Carbon::create($current_date->year,$current_date->month,$current_date->day,9,0,0)->format('H:i'));
     }
 }

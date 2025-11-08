@@ -57,7 +57,7 @@ class AttendanceController extends Controller
                 ];
                 return view('attendance-off', $data);
                 break;
-            case "勤務中":
+            case "出勤中":
                 $worktimeId = Worktime::where('user_id', Auth::user()->id)->where('date', $current_date)->first()->id;
                 if($request->worktimeId !== null){
                     $data = [
@@ -109,6 +109,7 @@ class AttendanceController extends Controller
         $worktime->user_id = Auth::user()->id;
         $worktime->start_time = $current_time;
         $worktime->end_time = null;
+        $worktime->remarks = null;
         $worktime->save();
         $worktimeId = $worktime->id;
 
@@ -119,7 +120,7 @@ class AttendanceController extends Controller
         ];
 
         $status_data = [
-            'content' => '勤務中',
+            'content' => '出勤中',
         ];
 
         Status::where('user_id', Auth::user()->id)->update($status_data);
@@ -184,7 +185,7 @@ class AttendanceController extends Controller
         ];
 
         $status_data = [
-            'content' => '勤務中',
+            'content' => '出勤中',
         ];
 
         $data = [
@@ -285,6 +286,7 @@ class AttendanceController extends Controller
             $temp_worktime->user_id = Auth::user()->id;
             $temp_worktime->start_time = $request->workStartTime;
             $temp_worktime->end_time = $request->workEndTime;
+            $temp_worktime->remarks = $request->remarks;
             $temp_worktime->save();
             $tempWorktimeId = $temp_worktime->id;
 
@@ -302,7 +304,6 @@ class AttendanceController extends Controller
             $application = new Application();
             $application->worktime_id = $id;
             $application->temp_worktime_id = $tempWorktimeId;
-            $application->reason = $request->reason;
             $application->save();
             $applicationId = $application->id;
 

@@ -14,7 +14,6 @@ class Application extends Model
         'user_id',
         'worktime_id',
         'temp_worktime_id',
-        'reason',
     ];
 
     public function worktime(){

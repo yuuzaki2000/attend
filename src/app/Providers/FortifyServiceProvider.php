@@ -29,15 +29,6 @@ class FortifyServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
-        $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
-            public function toResponse($request){
-                if($request->guard == 'admin'){
-                    return redirect('/admin/login');
-                }else{
-                    return redirect('/login');
-                }
-            }
-        });
     }
 
     /**

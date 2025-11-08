@@ -17,6 +17,7 @@ class Worktime extends Model
         'start_time',
         'end_time',
         'breaktime_id',
+        'remarks',
     ];
 
     public function user(){

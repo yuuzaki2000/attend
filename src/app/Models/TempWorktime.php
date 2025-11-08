@@ -18,6 +18,7 @@ class TempWorktime extends Model
         'user_id',
         'start_time',
         'end_time',
+        'remarks',
     ];
 
     public function user(){

@@ -16,11 +16,23 @@ use App\Models\User;
 use App\Http\Requests\WorkRequest;
 use App\Http\Requests\AttendRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
 
 class AdminAttendanceController extends Controller
 {
     //
+    private function getDatesOfMonth($year, $month){
+        $dates = [];
+        $particularDate = Carbon::create($year, $month, 1);
+        $numberOfDays = $particularDate->daysInMonth;
+        for($i=0; $i<$numberOfDays; $i++){
+            $date = $particularDate->copy()->startOfMonth()->addDays($i);
+            $dates[] = $date;
+        }
+        return $dates;
+    }
+
     public function getList(){
         $particularDate = Carbon::now();
 
@@ -51,7 +63,7 @@ class AdminAttendanceController extends Controller
         $current_time = Carbon::now()->format('H:i');
         $current_date = Carbon::now()->format('Y-m-d');
         $worktime = Worktime::find($id);
-        return view('admin.admin-break-multi-detail', compact('worktime'));
+        return view('admin.admin-attendance-detail', compact('worktime'));
     }
 
     public function update(AttendanceRequest $request, $id){
@@ -63,6 +75,7 @@ class AdminAttendanceController extends Controller
             $worktime->update([
                 'start_time' => $request->workStartTime,
                 'end_time' => $request->workEndTime,
+                'remarks' => null,
             ]);
 
             if(count($worktime->breaktimes) > 0){
@@ -120,7 +133,41 @@ class AdminAttendanceController extends Controller
     }
 
     public function getStaffAttendanceList($id){
-        $user = User::find($id);
-        return view('admin.staff-attendance-list');
+        $particularDate = Carbon::now();
+        $userId = $id;
+        $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
+        return view('admin.staff-attendance-list', compact('userId', 'dates', 'particularDate'));
+    }
+
+    public function export(){
+        $users = User::all();
+        $stream = fopen('php://temp', 'w');
+        $arr = array('id', 'name', 'email');
+        fputcsv($stream, $arr);
+        foreach($users as $user){
+            $arrInfo = array(
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email
+            );
+            fputcsv($stream, $arrInfo);
+        }
+        
+        rewind($stream);
+        $csv = stream_get_contents($stream);
+        $csv = mb_convert_encoding($csv, 'sjis-win', 'UTF-8');
+        fclose($stream);
+        /*
+        return response($csv)->withHeaders([
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="test.csv"',
+        ]);  */
+
+        $headers = array(
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="test.csv"',
+        );
+
+        return Response::make($csv, 200, $headers);
     }
 }

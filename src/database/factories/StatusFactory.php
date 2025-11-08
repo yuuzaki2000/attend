@@ -19,7 +19,7 @@ class StatusFactory extends Factory
                 return User::factory()->create()->id;
             },
             'date' => \Carbon\Carbon::now()->format('Y-m-d'),
-            'content' => '勤務中',
+            'content' => '出勤中',
         ];
     }
 }

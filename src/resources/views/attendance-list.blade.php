@@ -35,7 +35,9 @@
             <tr>
                 @php
                 //totalBreakTimeIntervalの計算
-                $worktime = \App\Models\Worktime::where('date', $date->format('Y-m-d'))->first();
+                $worktime = \App\Models\Worktime::where('date', $date->format('Y-m-d'))
+                            ->where('user_id', Auth::id())
+                            ->first();
                 $totalBreakTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);
 
                 if($worktime !== null){

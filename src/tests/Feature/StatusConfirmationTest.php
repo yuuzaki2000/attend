@@ -83,7 +83,7 @@ class StatusConfirmationTest extends TestCase
         $status_data = [
                 'user_id' => Auth::user()->id,
                 'date' => $current_date,
-                'content' => '勤務中',
+                'content' => '出勤中',
         ];
         Status::create($status_data);
 

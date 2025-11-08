@@ -40,6 +40,7 @@ Route::prefix('admin')->group(function () {
 Route::middleware('auth:admin')->group(function(){
     Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceController::class, 'getApprovalPage']);
     Route::post('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceController::class, 'approve']);
+    Route::post('/csv/export', [AdminAttendanceController::class, 'export']);
 });
 
 Route::middleware(['auth:web', 'verified'])->group(function(){
