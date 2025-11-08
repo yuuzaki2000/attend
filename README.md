@@ -27,3 +27,17 @@ DB_USERNAME=laravel_user DB_PASSWORD=laravel_pass
 シーディングを実行する php artisan db:seed
 
 #実行環境 MySQL 8.0.26 PHP 7.4.9-fpm Laravel 8 nginx 1.21.1
+
+#メール認証について
+
+mailtrapというツールを使用しています。
+
+以下のリンクから会員登録をしてください。　
+
+https://mailtrap.io/
+
+メールボックスのIntegrationsから 「laravel 7.x and 8.x」を選択し、　
+
+.envファイルのMAIL_MAILERからMAIL_ENCRYPTIONまでの項目をコピー＆ペーストしてください。　
+
+MAIL_FROM_ADDRESSは任意のメールアドレスを入力してください。
