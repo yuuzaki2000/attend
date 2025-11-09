@@ -8,17 +8,19 @@
     <div class="content">
         <div>staff-attendance-list.blade.php</div>
         <div class="month-select-container">
-            <form action="/attendance/list/previous" method="get">
+            <form action="/admin/attendance/list/previous_month" method="get">
             @csrf
                 <input type="hidden" name="monthPreviousParticularDate" value={{$particularDate->copy()->subMonth()->toDateString()}}>
+                <input type="hidden" name="userId" value="{{$userId}}">
                 <button type="submit">前月</button>
             </form>
             <div class="month-select-container">
                 <div class="month-select-bar">{{$particularDate->format('Y年m月')}}</div>
             </div>
-            <form action="/attendance/list/later" method="get">
+            <form action="/admin/attendance/list/later_month" method="get">
             @csrf
                 <input type="hidden" name="monthLaterParticularDate" value={{$particularDate->copy()->addMonth()->toDateString()}}>
+                <input type="hidden" name="userId" value="{{$userId}}">
                 <button type="submit">翌月</button>
             </form>
         </div>

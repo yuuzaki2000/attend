@@ -20,15 +20,17 @@ use App\Http\Controllers\ApplicationController;
 */
 
 Route::prefix('admin')->group(function () {
-    Route::get('login', [LoginController::class, 'create'])->name('admin.login');
-    Route::post('login', [LoginController::class, 'store']);
-    Route::get('register', [RegisteredController::class, 'create'])->name('admin.register');
-    Route::post('register', [RegisteredController::class, 'store']);
+    Route::get('/login', [LoginController::class, 'create'])->name('admin.login');
+    Route::post('/login', [LoginController::class, 'store']);
+    Route::get('/register', [RegisteredController::class, 'create'])->name('admin.register');
+    Route::post('/register', [RegisteredController::class, 'store']);
 
     Route::middleware('auth:admin')->group(function () {
         Route::get('/attendance/list', [AdminAttendanceController::class, 'getList'])->name('admin.attendance.list');
-        Route::get('/attendance/list/previous', [AdminAttendanceController::class, 'getPreviousDate']);
-        Route::get('/attendance/list/later', [AdminAttendanceController::class, 'getLaterDate']);
+        Route::get('/attendance/list/previous_date', [AdminAttendanceController::class, 'getPreviousDateList']);
+        Route::get('/attendance/list/later_date', [AdminAttendanceController::class, 'getLaterDateList']);
+        Route::get('/attendance/list/previous_month', [AdminAttendanceController::class, 'getPreviousMonthList']);
+        Route::get('/attendance/list/later_month', [AdminAttendanceController::class, 'getLaterMonthList']);
         Route::get('/attendance/{id}', [AdminAttendanceController::class, 'getDetail']);
         Route::post('/attendance/{id?}', [AdminAttendanceController::class, 'update']);
         Route::get('/staff/list', [AdminAttendanceController::class, 'getStaffList']);

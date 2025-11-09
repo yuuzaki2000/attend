@@ -199,72 +199,26 @@ class AttendanceController extends Controller
         return redirect()->route('guest.attendance.index', $data);
     }
 
-    public function getPreviousMonthList(Request $request){
-        $particularDate = Carbon::parse($request->monthPreviousParticularDate);
-
-        $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
-
-        $revisedWorktimeArray = collect();
-
-        foreach($dates as $date){
-            $worktime = Worktime::where('user_id', Auth::id())
-                    ->where('date', $date->format('Y-m-d'))
-                    ->first();
-            if($worktime !== null){
-                $revisedWorktimeArray->push($worktime->attributesToArray());
-            }else{
-                $revisedWorktime = [
-                    'id' => null,
-                    'user_id' => Auth::id(),
-                    'date' => $date->format('Y-m-d'),
-                    'start_time' => null,
-                    'end_time' => null,
-                    'created_at' => null,
-                    'updated_at' => null,
-                ];
-                $revisedWorktimeArray->push($revisedWorktime);
-            }
-        }
-
-        return view('attendance-list', compact('particularDate', 'revisedWorktimeArray','dates'));
-    }
-
-    public function getLaterMonthList(Request $request){
-        $particularDate = Carbon::parse($request->monthLaterParticularDate);
-
-        $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
-
-        $revisedWorktimeArray = collect();
-
-        foreach($dates as $date){
-            $worktime = Worktime::where('user_id', Auth::id())
-                    ->where('date', $date->format('Y-m-d'))
-                    ->first();
-            if($worktime !== null){
-                $revisedWorktimeArray->push($worktime->attributesToArray());
-            }else{
-                $revisedWorktime = [
-                    'id' => null,
-                    'user_id' => Auth::id(),
-                    'date' => $date->format('Y-m-d'),
-                    'start_time' => null,
-                    'end_time' => null,
-                    'created_at' => null,
-                    'updated_at' => null,
-                ];
-                $revisedWorktimeArray->push($revisedWorktime);
-            }
-        }
-
-        return view('attendance-list', compact('particularDate', 'revisedWorktimeArray', 'dates'));
-    }
-
     public function getList(){
         $particularDate = Carbon::now();
 
         $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
 
         return view('attendance-list', compact('dates', 'particularDate'));
+    }
+
+    public function getPreviousMonthList(Request $request){
+        $particularDate = Carbon::parse($request->monthPreviousParticularDate);
+        $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
+
+        return view('attendance-list', compact('particularDate', 'dates'));
+    }
+
+    public function getLaterMonthList(Request $request){
+        $particularDate = Carbon::parse($request->monthLaterParticularDate);
+        $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
+
+        return view('attendance-list', compact('particularDate', 'dates'));
     }
 
     public function getDetail($id){

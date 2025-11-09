@@ -61,10 +61,6 @@ class RegisteredController extends Controller
             ]);
         }
 
-        /*
-        event(new Registered($user = $creator->create($request->all())));
-        */
-
         $admin = $creator->create($request->all());
 
         Auth::guard('admin')->login($admin);

@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="content">
-        <form action="/admin/attendance/list/previous" method="get">
+        <form action="/admin/attendance/list/previous_date" method="get">
         @csrf
             <input type="hidden" name="previousParticularDate" value={{$particularDate->copy()->subDay()->toDateString()}}>
             <button type="submit">前日</button>
@@ -14,7 +14,7 @@
         <div class="month-select-container">
             <div class="month-select-bar">{{$particularDate->format('Y年m月d日')}}</div>
         </div>
-        <form action="/admin/attendance/list/later" method="get">
+        <form action="/admin/attendance/list/later_date" method="get">
         @csrf
             <input type="hidden" name="laterParticularDate" value={{$particularDate->copy()->addDay()->toDateString()}}>
             <button type="submit">翌日</button>

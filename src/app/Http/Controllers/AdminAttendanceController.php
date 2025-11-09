@@ -43,7 +43,7 @@ class AdminAttendanceController extends Controller
         return view('admin.admin-attendance-list', compact('worktimes', 'particularDate', 'users'));
     }
 
-    public function getPreviousDate(Request $request){
+    public function getPreviousDateList(Request $request){
         $particularDate = Carbon::parse($request->previousParticularDate);
         $worktimes = Worktime::where('date', $particularDate->format('Y-m-d'))->get();
         $users = User::all();
@@ -51,7 +51,7 @@ class AdminAttendanceController extends Controller
         return view('admin.admin-attendance-list', compact('worktimes','particularDate','users'));
     }
 
-    public function getLaterDate(Request $request){
+    public function getLaterDateList(Request $request){
         $particularDate = Carbon::parse($request->laterParticularDate);
         $worktimes = Worktime::where('date', $particularDate->format('Y-m-d'))->get();
         $users = User::all();
@@ -139,6 +139,20 @@ class AdminAttendanceController extends Controller
         return view('admin.staff-attendance-list', compact('userId', 'dates', 'particularDate'));
     }
 
+    public function getPreviousMonthList(Request $request){
+        $particularDate = Carbon::parse($request->monthPreviousParticularDate);
+        $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
+        $userId = $request->userId;
+        return view('admin.staff-attendance-list', compact('userId', 'dates', 'particularDate'));
+    }
+
+    public function getLaterMonthList(Request $request){
+        $particularDate = Carbon::parse($request->monthLaterParticularDate);
+        $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
+        $userId = $request->userId;
+        return view('admin.staff-attendance-list', compact('userId', 'dates', 'particularDate'));
+    }
+
     public function export(){
         $users = User::all();
         $stream = fopen('php://temp', 'w');
@@ -157,11 +171,6 @@ class AdminAttendanceController extends Controller
         $csv = stream_get_contents($stream);
         $csv = mb_convert_encoding($csv, 'sjis-win', 'UTF-8');
         fclose($stream);
-        /*
-        return response($csv)->withHeaders([
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="test.csv"',
-        ]);  */
 
         $headers = array(
             'Content-Type' => 'text/csv',

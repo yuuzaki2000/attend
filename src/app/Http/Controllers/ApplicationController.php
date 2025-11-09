@@ -58,11 +58,6 @@ class ApplicationController extends Controller
                     }
                 }
 
-            /*
-            $appliedWorktimes = Worktime::has('application')->whereHas('application.approval', function($query){
-                $query->where('is_approved', false);
-            });            */
-
             return view('admin.admin-application-list', compact('appliedWorktimes'));
 
         }else{

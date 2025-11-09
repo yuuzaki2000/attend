@@ -28,7 +28,12 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        //スタッフログアウト処理
+        $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
+            public function toResponse($request){
+                    return redirect('/login');
+            }
+        });
     }
 
     /**
