@@ -32,7 +32,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/attendance/list/previous_month', [AdminAttendanceController::class, 'getPreviousMonthList']);
         Route::get('/attendance/list/later_month', [AdminAttendanceController::class, 'getLaterMonthList']);
         Route::get('/attendance/{id}', [AdminAttendanceController::class, 'getDetail']);
-        Route::post('/attendance/{id?}', [AdminAttendanceController::class, 'update']);
+        Route::post('/attendance/{id}', [AdminAttendanceController::class, 'update']);
         Route::get('/staff/list', [AdminAttendanceController::class, 'getStaffList']);
         Route::get('/attendance/staff/{id}', [AdminAttendanceController::class, 'getStaffAttendanceList']);
         Route::post('/logout', [LoginController::class, 'destroy']);
@@ -52,7 +52,6 @@ Route::middleware(['auth:web', 'verified'])->group(function(){
     Route::post('/break/in', [AttendanceController::class, 'takeBreak']);
     Route::post('/break/out', [AttendanceController::class, 'leaveBreak']);
     Route::get('/attendance/list', [AttendanceController::class, 'getList']);
-    Route::post('/attendance/list', [AttendanceController::class, 'getPreviousMonthList']);
     Route::get('/attendance/detail/{id}', [AttendanceController::class, 'getDetail']);
     Route::post('/attendance/detail/{id}', [AttendanceController::class, 'update']);
     Route::get('/attendance/list/previous', [AttendanceController::class, 'getPreviousMonthList']);

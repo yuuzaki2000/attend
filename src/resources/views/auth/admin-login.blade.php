@@ -31,6 +31,5 @@
     </div>
     @enderror
     <button class="register-button">ログインする</button>
-    <div class="login-transition"><a href="/admin/register" class="login-transition-text">新規登録はこちら</a></div>
 </form>
 @endsection

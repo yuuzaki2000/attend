@@ -14,11 +14,11 @@
     <div class="tab-group">
         <div>
             <input type="hidden" name="page" value="applicated">
-            <button type="submit">申請済</button>
+            <button type="submit">承認待ち</button>
         </div>
         <div action="/stamp_correction_request/list" method="get">
             <input type="hidden" name="page" value="approved">
-            <button type="submit">承認済</button>
+            <button type="submit">承認済み</button>
         </div>
     </div>
     <div class="table-container">
@@ -32,12 +32,17 @@
                 <th class="table-header">詳細</th>
             </tr>
             @foreach ($appliedWorktimes as $appliedWorktime)
+            @php
+                $approval = App\Models\Approval::whereHas('application.worktime', function($query) use ($appliedWorktime){
+                    $query->where('id', $appliedWorktime->id);
+                })->first();
+            @endphp
             <tr>
-                <td class="table-detail">承認判定なし</td>
-                <td class="table-detail">{{$appliedWorktime?$appliedWorktime->user->name:null}}</td>
-                <td class="table-detail">{{$appliedWorktime?$appliedWorktime->date:null}}</td>
-                <td class="table-detail">{{$appliedWorktime?$appliedWorktime->application->reason:null}}</td>
-                <td class="table-detail">{{$appliedWorktime?$appliedWorktime->application->created_at:null}}</td>
+                <td class="table-detail">{{$approval->is_approved?'承認済み':'承認待ち'}}</td>
+                <td class="table-detail">{{$appliedWorktime->user->name}}</td>
+                <td class="table-detail">{{$appliedWorktime->date}}</td>
+                <td class="table-detail">{{$appliedWorktime->remarks}}</td>
+                <td class="table-detail">{{$appliedWorktime->application->created_at}}</td>
                 @if($appliedWorktime)
                 <td class="table-detail">
                     <form action="/stamp_correction_request/approve/{{$appliedWorktime->id}}" method="get">
@@ -48,7 +53,7 @@
                 @else
                 <td class="table-detail">
                     <div>
-                        <button type="submit">詳細</button>
+                        <button>詳細</button>
                     </div>
                 </td>
                 @endif

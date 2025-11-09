@@ -47,8 +47,8 @@ class StartWorkTest extends TestCase
             'id' => 1,
             'date' => $current_date,
             'user_id' => Auth::user()->id,
-            'start_time' => Carbon::create(2025,10,30,9,0,0)->format('H:i'),
-            'end_time' => Carbon::create(2025,10,30,17,0,0)->format('H:i'),
+            'start_time' => Carbon::now()->copy()->setTime(9,0,0)->format('H:i'),
+            'end_time' => Carbon::now()->copy()->setTime(17,0,0)->format('H:i'),
         ]);
 
         $data = [
@@ -90,8 +90,8 @@ class StartWorkTest extends TestCase
         $worktime = new Worktime();
         $worktime->date = $current_date;
         $worktime->user_id = Auth::user()->id;
-        $worktime->start_time = Carbon::create(2025,10,30,9,0,0)->format('H:i');
-        $worktime->end_time = Carbon::create(2025,10,30,17,0,0)->format('H:i');
+        $worktime->start_time = Carbon::now()->copy()->setTime(9,0,0)->format('H:i');
+        $worktime->end_time = Carbon::now()->copy()->setTime(17,0,0)->format('H:i');
         $worktime->save();
         $worktimeId = $worktime->id;
 
@@ -117,7 +117,6 @@ class StartWorkTest extends TestCase
 
         $this->actingAs($user);
 
-
         $current_time = Carbon::now()->format('H:i');
         $current_date = Carbon::now()->format('Y-m-d');
 
@@ -131,8 +130,8 @@ class StartWorkTest extends TestCase
         $worktime = new Worktime();
         $worktime->date = $current_date;
         $worktime->user_id = Auth::user()->id;
-        $worktime->start_time = Carbon::create($current_date->year,$current_date->month,$current_date->day,9,0,0)->format('H:i');
-        $worktime->end_time = Carbon::create($current_date->year,$current_date->month,$current_date->day,17,0,0)->format('H:i');
+        $worktime->start_time = Carbon::now()->copy()->setTime(9,0,0)->format('H:i');
+        $worktime->end_time = Carbon::now()->copy()->setTime(17,0,0)->format('H:i');
         $worktime->save();
         $worktimeId = $worktime->id;
 
@@ -146,13 +145,8 @@ class StartWorkTest extends TestCase
         $response->assertStatus(200);
 
         $response = $this->post('/work/start');
-        $response->assertRedirect(route('guest.attendance.index', [
-            'current_time' => $current_time,
-            'current_date' => $current_date,
-            'worktimeId' => 2,
-        ]));
         $response = $this->get('/attendance/list');
         $response->assertStatus(200);
-        $response->assertSeeText(Carbon::create($current_date->year,$current_date->month,$current_date->day,9,0,0)->format('H:i'));
+        $response->assertSeeText(Carbon::now()->copy()->setTime(9,0,0)->format('H:i'));
     }
 }

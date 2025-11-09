@@ -13,10 +13,9 @@ use App\Models\TempBreaktime;
 use App\Models\Application;
 use App\Http\Requests\AttendanceRequest;
 use App\Models\User;
-use App\Http\Requests\WorkRequest;
-use App\Http\Requests\AttendRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
+use Carbon\CarbonInterval;
 
 
 class AdminAttendanceController extends Controller
@@ -75,7 +74,7 @@ class AdminAttendanceController extends Controller
             $worktime->update([
                 'start_time' => $request->workStartTime,
                 'end_time' => $request->workEndTime,
-                'remarks' => null,
+                'remarks' => $request->remarks,
             ]);
 
             if(count($worktime->breaktimes) > 0){
@@ -108,8 +107,8 @@ class AdminAttendanceController extends Controller
         return view('admin.admin-approval',compact('worktime', 'tempWorktime'));
     }
 
-    public function approve(Request $request){
-        $worktime = Worktime::find($request->worktimeId);
+    public function approve(Request $request, $attendance_correct_request){
+        $worktime = Worktime::find($attendance_correct_request);
         $approval = $worktime->application->approval();
         $approval->update([
             'is_approved' => true,
@@ -153,16 +152,50 @@ class AdminAttendanceController extends Controller
         return view('admin.staff-attendance-list', compact('userId', 'dates', 'particularDate'));
     }
 
-    public function export(){
-        $users = User::all();
+    public function export(Request $request){
+
+        $particularDate = Carbon::parse($request->particularDate);
+        $userId = $request->particularUserId;
+        $dates = $this->getDatesOfMonth($particularDate->year,$particularDate->month);
+
         $stream = fopen('php://temp', 'w');
-        $arr = array('id', 'name', 'email');
+        $arr = array('日付', '開始時間','退勤時間','休憩時間', '合計');
         fputcsv($stream, $arr);
-        foreach($users as $user){
+        foreach($dates as $date){
+
+            //totalBreakTimeIntervalの計算
+                    $worktime = Worktime::where('date', $date->format('Y-m-d'))
+                                ->where('user_id', $userId)
+                                ->first();
+                    $totalBreakTimeInterval = CarbonInterval::hours(0)->minutes(0);
+
+                    if($worktime !== null){
+                        $breaktimes = Breaktime::where('worktime_id', $worktime->id)->get();
+
+                        foreach($breaktimes as $breaktime){
+                            $breakStartTime = Carbon::create($breaktime->start_time);
+                            $breakEndTime = Carbon::create($breaktime->end_time);
+                            $breakTimeInterval = $breakStartTime->diff($breakEndTime);
+                            $totalBreakTimeInterval->add($breakTimeInterval);
+                        }
+
+                        $workStartTime = Carbon::create($worktime->start_time);
+                        $workEndTime = Carbon::create($worktime->end_time);
+                        $workTimeInterval = CarbonInterval::instance($workStartTime->diff($workEndTime));
+                        $attendanceTimeInterval = $workTimeInterval->subtract($totalBreakTimeInterval);
+                    }else{
+                        $workStartTime = null;
+                        $workEndTime = null;
+                        $totalBreakTimeInterval = CarbonInterval::hours(0)->minutes(0);
+                        $attendanceTimeInterval = CarbonInterval::hours(0)->minutes(0);
+                    }
+
             $arrInfo = array(
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email
+                'date' => $date->format('Y-m-d'),
+                'workStartTime' => $workStartTime?$workStartTime->format('H:i'):'0:00',
+                'workEndTime' => $workEndTime?$workEndTime->format('H:i'):'0:00',
+                'breakTimeInterval' => $totalBreakTimeInterval->format('%h:%i'),
+                'workTotalTime' => $attendanceTimeInterval->format('%h:%i'),
             );
             fputcsv($stream, $arrInfo);
         }

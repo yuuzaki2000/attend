@@ -10,7 +10,7 @@
         <div class="month-select-container">
             <form action="/admin/attendance/list/previous_month" method="get">
             @csrf
-                <input type="hidden" name="monthPreviousParticularDate" value={{$particularDate->copy()->subMonth()->toDateString()}}>
+                <input type="hidden" name="monthPreviousParticularDate" value="{{$particularDate->copy()->subMonth()->toDateString()}}">
                 <input type="hidden" name="userId" value="{{$userId}}">
                 <button type="submit">前月</button>
             </form>
@@ -19,10 +19,10 @@
             </div>
             <form action="/admin/attendance/list/later_month" method="get">
             @csrf
-                <input type="hidden" name="monthLaterParticularDate" value={{$particularDate->copy()->addMonth()->toDateString()}}>
+                <input type="hidden" name="monthLaterParticularDate" value="{{$particularDate->copy()->addMonth()->toDateString()}}">
                 <input type="hidden" name="userId" value="{{$userId}}">
                 <button type="submit">翌月</button>
-            </form>
+            </form>    
         </div>
         <div class="attendance-table-container">
             <table class="attendance-table">
@@ -63,8 +63,6 @@
                         $totalBreakTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);
                         $attendanceTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);
                     }
-
-                    //配列の書き方で、breaktimeのデータを検索する
                     @endphp
                     <td class="attendance-data">{{$date->format('Y-m-d')}}</td>
                     <td class="attendance-data">{{$workStartTime?$workStartTime->format('H:i'):null}}</td>
@@ -82,11 +80,13 @@
                 @endforeach
             </table>
         </div>
-        <form action="/csv/export" method=>
-        @csrf
-            <button type="submit">CSV出力</button>
-        </form>
     </div>
+    <form action="/csv/export" method="post">
+        @csrf
+            <input type="hidden" name="particularDate" value="{{$particularDate->copy()->toDateString()}}">
+            <input type="hidden" name="particularUserId" value="{{$userId}}">
+            <button type="submit">CSV出力</button>
+    </form>
 @endsection
 
 

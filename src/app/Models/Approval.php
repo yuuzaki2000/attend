@@ -15,7 +15,7 @@ class Approval extends Model
         'updated_at',
     ];
 
-    public function approval(){
+    public function application(){
         return $this->belongsTo(Application::class);
     }
 }

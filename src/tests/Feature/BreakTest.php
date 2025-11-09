@@ -35,6 +35,7 @@ class BreakTest extends TestCase
         $this->actingAs($user);
 
 
+        $baseDate = Carbon::now();
         $current_time = Carbon::now()->format('H:i');
         $current_date = Carbon::now()->format('Y-m-d');
 
@@ -109,11 +110,9 @@ class BreakTest extends TestCase
 
         $response = $this->post('/break/in', $work_data);
 
-        $breaktime = new Breaktime();
-        $breaktime->start_time = $current_time;
-        $breaktime->end_time = null;
-        $breaktime->worktime_id = $worktimeId;
-        $breaktime->save();
+        $breaktime = Breaktime::whereHas('worktime', function($query) use ($worktimeId){
+            $query->where('id', $worktimeId);
+        })->first();
         $breaktimeId = $breaktime->id;
 
         $break_data = [
@@ -164,11 +163,9 @@ class BreakTest extends TestCase
 
         $response = $this->post('/break/in', $work_data);
 
-        $breaktime = new Breaktime();
-        $breaktime->start_time = $current_time;
-        $breaktime->end_time = null;
-        $breaktime->worktime_id = $worktimeId;
-        $breaktime->save();
+        $breaktime = Breaktime::whereHas('worktime', function($query) use ($worktimeId){
+            $query->where('id', $worktimeId);
+        })->first();
         $breaktimeId = $breaktime->id;
 
         $break_data = [
@@ -223,11 +220,9 @@ class BreakTest extends TestCase
 
         $response = $this->post('/break/in', $work_data);
 
-        $breaktime = new Breaktime();
-        $breaktime->start_time = $current_time;
-        $breaktime->end_time = null;
-        $breaktime->worktime_id = $worktimeId;
-        $breaktime->save();
+        $breaktime = Breaktime::whereHas('worktime', function($query) use ($worktimeId){
+            $query->where('id', $worktimeId);
+        })->first();
         $breaktimeId = $breaktime->id;
 
         $break_data = [
@@ -240,6 +235,59 @@ class BreakTest extends TestCase
     }
 
     public function we_can_confirm_break_time_at_attendance_list(){
+        $user = User::factory()->create([
+            'id' => 1,
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+        ]);
 
+        $this->actingAs($user);
+
+
+        $current_time = Carbon::now()->format('H:i');
+        $current_date = Carbon::now()->format('Y-m-d');
+
+        $status_data = [
+                'user_id' => Auth::user()->id,
+                'date' => $current_date,
+                'content' => '出勤中',
+        ];
+        Status::create($status_data);
+
+        $worktime = new Worktime();
+        $worktime->date = $current_date;
+        $worktime->user_id = Auth::user()->id;
+        $worktime->start_time = Carbon::create(2025,10,30,9,0,0)->format('H:i');
+        $worktime->end_time = Carbon::create(2025,10,30,17,0,0)->format('H:i');
+        $worktime->save();
+        $worktimeId = $worktime->id;
+
+        $work_data = [
+            'worktimeId' => $worktimeId,
+        ];
+
+        $response = $this->get('/attendance', $work_data);
+        $response->assertStatus(200);
+        $response->assertSee('休憩入</button>', false);
+
+        $response = $this->post('/break/in', $work_data);
+
+        $breaktime = Breaktime::whereHas('worktime', function($query) use ($worktimeId){
+            $query->where('id', $worktimeId);
+        })->first();
+        $breaktimeId = $breaktime->id;
+
+        $break_data = [
+            'breaktimeId' => $breaktimeId,
+        ];
+
+        $response = $this->post('/break/out', $break_data);
+        $response = $this->post('/break/in', $work_data);
+        $breaktime->update([
+            'start_time' => Carbon::now()->copy()->setTime(12,0,0),
+            'end_time' => Carbon::now()->copy()->setTime(13,0,0),
+        ]);
+        $response->assertSeeText('1:00');
     }
 }

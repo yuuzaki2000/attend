@@ -43,7 +43,7 @@
             </nav>
         </div>
         <div class="main">
-            <h2 class="inner-title">@yield('title')</h2>
+            <h2 class="title">@yield('title')</h2>
             <div class="content">@yield('content')</div>
         </div>
 </body>

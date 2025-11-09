@@ -31,22 +31,31 @@ class AttendanceRequest extends FormRequest
             'breakStartTime.*' => 'required|date_format:H:i',
             'breakEndTime' => 'array',
             'breakEndTime.*' => 'required|date_format:H:i',
-            'remarks' => 'required',
+            'remarks' => 'required|string|max:255',
         ];
     }
 
     public function withValidator($validator){
         $validator->after(function($validator){
-            if($this->input('workStartTime') > $this->input('workEndTime')){
+            $workStart = $this->input('workStartTime');
+            $workEnd = $this->input('workEndTime');
+            if($workStart > $workEnd){
                 $validator->errors()->add('workStartWorkEndTemporalOrder', '出勤時間もしくは退勤時間が不適切な値です');
             }
-            
-            if($this->input('breakStartTime.*') > $this->input('workStartTime') || $this->input('breakStartTime.*') > $this->input('workEndTime')){
-                $validator->errors()->add('workStartBreakStartTemporalOrder', '休憩時間が不適切な値です');
+
+            $breakStarts = $this->input('breakStartTime', []);
+            $breakEnds = $this->input('breakEndTime', []);
+
+            foreach ($breakStarts as $index => $start) {
+                if ($start < $workStart || $start > $workEnd) {
+                    $validator->errors()->add("breakStartTime.$index", "休憩時間が不適切な値です");
+                }
             }
 
-            if($this->input('breakEndTime.*')> $this->input('workEndTime')){
-                $validator->errors()->add('workEndBreakEndTemporalOrder', '休憩時間もしくは退勤時間が不適切な値です');
+            foreach ($breakEnds as $index => $end) {
+                if ($end > $workEnd) {
+                    $validator->errors()->add("breakEndTime.$index", "休憩時間もしくは退勤時間が不適切な値です");
+                }
             }
         });
     }

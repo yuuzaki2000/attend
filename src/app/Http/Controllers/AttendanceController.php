@@ -14,6 +14,8 @@ use App\Models\TempBreaktime;
 use Illuminate\Support\Collection;
 use App\Models\Approval;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\AttendanceRequest;
+
 
 
 
@@ -228,7 +230,7 @@ class AttendanceController extends Controller
         return view('attendance-detail', compact('worktime'));
     }
     //
-    public function update(Request $request, $id){
+    public function update(AttendanceRequest $request, $id){
 
 
         try{

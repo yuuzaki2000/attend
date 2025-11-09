@@ -5,9 +5,10 @@
 @endsection
 
 @section('content')
+<div class="total-container">
     <div>attendance-list.blade.php</div>
-    <div class="month-select-container">
-        <form action="/attendance/list/previous" method="get">
+    <div class="bar">
+        <form class="previous" action="/attendance/list/previous" method="get">
         @csrf
             <input type="hidden" name="monthPreviousParticularDate" value={{$particularDate->copy()->subMonth()->toDateString()}}>
             <button type="submit">前月</button>
@@ -15,7 +16,7 @@
         <div class="month-select-container">
             <div class="month-select-bar">{{$particularDate->format('Y年m月')}}</div>
         </div>
-        <form action="/attendance/list/later" method="get">
+        <form class="later" action="/attendance/list/later" method="get">
         @csrf
             <input type="hidden" name="monthLaterParticularDate" value={{$particularDate->copy()->addMonth()->toDateString()}}>
             <button type="submit">翌月</button>
@@ -63,23 +64,24 @@
 
                 //配列の書き方で、breaktimeのデータを検索する
                 @endphp
-                <td class="attendance-data">{{$date->format('Y-m-d')}}</td>
-                <td class="attendance-data">{{$workStartTime?$workStartTime->format('H:i'):null}}</td>
-                <td class="attendance-data">{{$workEndTime?$workEndTime->format('H:i'):null}}</td>
-                <td class="attendance-data">{{$totalBreakTimeInterval->format('%h:%i')}}</td>
-                <td class="attendance-data">{{$attendanceTimeInterval->format('%h:%i')}}</td>
+                <td class="attendance-detail">{{$date->format('Y-m-d')}}</td>
+                <td class="attendance-detail">{{$workStartTime?$workStartTime->format('H:i'):null}}</td>
+                <td class="attendance-detail">{{$workEndTime?$workEndTime->format('H:i'):null}}</td>
+                <td class="attendance-detail">{{$totalBreakTimeInterval->format('%h:%i')}}</td>
+                <td class="attendance-detail">{{$attendanceTimeInterval->format('%h:%i')}}</td>
                 @if($worktime)
-                <td class="attendance-data">
+                <td class="attendance-detail">
                     <form action="/attendance/detail/{{$worktime->id}}" method="get">
                     @csrf
                         <button type="submit">詳細</button>
                     </form>
                 </td>
                 @else
-                <td class="attendance-data">詳細</td>
+                <td class="attendance-detail">詳細</td>
                 @endif
             </tr>
             @endforeach
         </table>
     </div>
+</div>
 @endsection

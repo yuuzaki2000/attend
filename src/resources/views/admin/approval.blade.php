@@ -8,7 +8,7 @@
 @endsection
 @section('content')
 <div class="total-container">
-    <form class="table-container" action="/admin/attendance/{{$worktime->id}}" method="post">
+    <form class="table-container" action="/stamp_correction_request/approve/{{$worktime->id}}" method="post">
     @csrf
             <div>
                 <table>
@@ -44,16 +44,11 @@
                     @foreach ($worktime->breaktimes as $key => $value)
                     <tr class="table-row">
                         <th class="table-header">休憩{{$key}}</th>
-                        <td class="table-detail"><input class="input" type="text" name="breakStartTime[{{$key}}]" value="{{\Carbon\Carbon::create($value->start_time)->format('H:i')}}"></td>
+                        <td class="table-detail"><input class="input" type="text" name="breakStartTime[{{$key}}]" value={{\Carbon\Carbon::create($worktime->breaktimes[$key]->start_time)->format('H:i')}}></td>
                         <td class="table-detail">～</td>
-                        <td class="table-detail"><input class="input" type="text" name="breakEndTime[{{$key}}]" value="{{\Carbon\Carbon::create($value->end_time)->format('H:i')}}"></td>
+                        <td class="table-detail"><input class="input" type="text" name="breakEndTime[]" value={{\Carbon\Carbon::create($worktime->breaktimes[$key]->end_time)->format('H:i')}}></td>
                     </tr>
                     @error("breakStartTime.$key")
-                    <tr>
-                        <td colspan="4">{{$message}}</td>
-                    </tr>                    
-                    @enderror
-                    @error("breakEndTime.$key")
                     <tr>
                         <td colspan="4">{{$message}}</td>
                     </tr>                    
@@ -63,7 +58,7 @@
                     <tr class="table-row">
                         <th class="table-header">備考</th>
                         <td class="table-detail" colspan="3">
-                            <input type="text" name="remarks" value="{{$worktime->remarks}}">
+                            <input type="text" name="remarks">
                         </td>
                     </tr>
                     @error('remarks')
@@ -74,7 +69,7 @@
                 </table>
             </div>
             <div>
-                <button type="submit">修正</button>
+                <button type="submit">承認</button>
             </div>        
     </form>
 
