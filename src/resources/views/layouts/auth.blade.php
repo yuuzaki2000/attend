@@ -14,14 +14,6 @@
             <img src="{{asset('img/logo.svg')}}" alt="ロゴ">
         </div>
         <nav class="header-nav">
-            {{--
-            <ul class="header-nav-list">
-                <li class="header-nav-item">勤怠</li>
-                <li class="header-nav-item">勤怠一覧</li>
-                <li class="header-nav-item">申請</li>
-                <li class="header-nav-item">ログアウト</li>
-            </ul>
-            --}}
         </nav>
     </div>
     <div class="main">

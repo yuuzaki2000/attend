@@ -6,7 +6,6 @@
 
 @section('content')
     <div class="content">
-        <div>staff-attendance-list.blade.php</div>
         <div class="month-select-container">
             <form action="/admin/attendance/list/previous_month" method="get">
             @csrf
@@ -64,17 +63,17 @@
                         $attendanceTimeInterval = \Carbon\CarbonInterval::hours(0)->minutes(0);
                     }
                     @endphp
-                    <td class="attendance-data">{{$date->format('Y-m-d')}}</td>
-                    <td class="attendance-data">{{$workStartTime?$workStartTime->format('H:i'):null}}</td>
-                    <td class="attendance-data">{{$workEndTime?$workEndTime->format('H:i'):null}}</td>
-                    <td class="attendance-data">{{$totalBreakTimeInterval->format('%h:%i')}}</td>
-                    <td class="attendance-data">{{$attendanceTimeInterval->format('%h:%i')}}</td>
+                    <td class="attendance-detail">{{$date->format('Y-m-d')}}</td>
+                    <td class="attendance-detail">{{$workStartTime?$workStartTime->format('H:i'):null}}</td>
+                    <td class="attendance-detail">{{$workEndTime?$workEndTime->format('H:i'):null}}</td>
+                    <td class="attendance-detail">{{$totalBreakTimeInterval->format('%h:%i')}}</td>
+                    <td class="attendance-detail">{{$attendanceTimeInterval->format('%h:%i')}}</td>
                     @if($worktime)
-                    <td class="attendance-data">
+                    <td class="attendance-detail">
                         <a href="/admin/attendance/{{$worktime->id}}">詳細</a>
                     </td>
                     @else
-                    <td class="attendance-data">詳細</td>
+                    <td class="attendance-detail">詳細</td>
                     @endif
                 </tr>
                 @endforeach

@@ -6,7 +6,6 @@
 
 @section('content')
 <div class="total-container">
-    <div>attendance-list.blade.php</div>
     <div class="bar">
         <form class="previous" action="/attendance/list/previous" method="get">
         @csrf

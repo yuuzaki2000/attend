@@ -22,7 +22,6 @@
                 <button type="submit">承認済み</button>
             </form>
     </div>
-    <div>application-list.blade.php</div>
     <div class="table-container">
         <table>
             <tr>

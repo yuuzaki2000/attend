@@ -11,7 +11,6 @@
 @endsection
 
 @section('content')
-<div>staff-list.blade.php</div>
 <div class="table-container">
     <table class="table">
         <tr>

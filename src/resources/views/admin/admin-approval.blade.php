@@ -13,7 +13,6 @@
     <form class="table-container" action="/stamp_correction_request/approve/{{$worktime->id}}" method="post">
     @csrf
             <input type="hidden" name="worktimeId" value="{{$worktime->id}}">
-            <div>admin-approval.blade.php</div>
             <table>
                 <input type="hidden" name="tempWorktimeId" value="{{$tempWorktime->id}}">
                 <tr class="table-row">

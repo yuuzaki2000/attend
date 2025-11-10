@@ -28,45 +28,30 @@
                 </tr>
                 <tr class="table-row">
                     <th class="table-header">出勤・退勤</th>
-                    <td class="table-detail"><input class="input" type="text" name="workStartTime" value={{\Carbon\Carbon::create($worktime->start_time)->format('H:i')}}></td>
+                    <td class="table-detail">{{\Carbon\Carbon::create($worktime->start_time)->format('H:i')}}</td>
                     <td class="table-detail">～</td>
-                    <td class="table-detail"><input class="input" type="text" name="workEndTime" value={{\Carbon\Carbon::create($worktime->end_time)->format('H:i')}}></td>
+                    <td class="table-detail">{{\Carbon\Carbon::create($worktime->end_time)->format('H:i')}}</td>
                 </tr>
                 @if (count($worktime->breaktimes) > 0)
                 @foreach ($worktime->breaktimes as $key => $value)
                 <tr class="table-row">
                     <th class="table-header">休憩{{$key}}</th>
-                    <td class="table-detail"><input class="input" type="text" name="breakStartTime[{{$key}}]" value="{{\Carbon\Carbon::create($value->start_time)->format('H:i')}}"></td>
+                    <td class="table-detail">{{\Carbon\Carbon::create($value->start_time)->format('H:i')}}</td>
                     <td class="table-detail">～</td>
-                    <td class="table-detail"><input class="input" type="text" name="breakEndTime[{{$key}}]" value="{{\Carbon\Carbon::create($value->end_time)->format('H:i')}}"></td>
+                    <td class="table-detail">{{\Carbon\Carbon::create($value->end_time)->format('H:i')}}</td>
                 </tr>
-                @error("breakStartTime.$key")
-                    <tr>
-                        <td colspan="4">{{$message}}</td>
-                    </tr>                    
-                @enderror
-                @error("breakEndTime.$key")
-                    <tr>
-                        <td colspan="4">{{$message}}</td>
-                    </tr>                    
-                @enderror
                 @endforeach
                 @endif
                 <tr class="table-row">
                     <th class="table-header">備考</th>
                     <td class="table-detail" colspan="3">
-                        <input type="text" name="remarks" value="{{$worktime->remarks}}">
+                        {{$worktime->remarks}}
                     </td>
                 </tr>
-                @error('remarks')
-                    <tr>
-                        <td colspan="4">{{$message}}</td>
-                    </tr>
-                @enderror
             </table>
         </div>
         <div class="update-button-container">
-            <button class="update-button">修正</button>
+            <div><p>*承認待ちのため修正はできません</p></div>
         </div>
     </form>
 @endsection

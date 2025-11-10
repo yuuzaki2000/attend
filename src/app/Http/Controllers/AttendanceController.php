@@ -227,7 +227,19 @@ class AttendanceController extends Controller
         $current_time = Carbon::now()->format('H:i');
         $current_date = Carbon::now()->format('Y-m-d');
         $worktime = Worktime::find($id);
-        return view('attendance-detail', compact('worktime'));
+        $approval = Approval::whereHas('application', function($query) use($id){
+            $query->where('worktime_id', $id);
+        })->first();
+
+        if($approval !== null){
+            if($approval->is_approved == true){
+                return view('attendance-detail', compact('worktime'));
+            }else{
+                return view('attendance-detail-lock', compact('worktime'));
+            }
+        }else{
+            return view('attendance-detail', compact('worktime'));
+        }
     }
     //
     public function update(AttendanceRequest $request, $id){

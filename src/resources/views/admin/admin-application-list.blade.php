@@ -10,16 +10,16 @@
 
 @section('content')
 <div class="content">
-    <div>admin-application-list.blade.php</div>
     <div class="tab-group">
-        <div>
-            <input type="hidden" name="page" value="applicated">
+        <form action="/stamp_correction_request/list" method="get">
+            @csrf
+            <input type="hidden" name="page" value="pendingApproval">
             <button type="submit">承認待ち</button>
-        </div>
-        <div action="/stamp_correction_request/list" method="get">
+        </form>
+        <form action="/stamp_correction_request/list" method="get">
             <input type="hidden" name="page" value="approved">
             <button type="submit">承認済み</button>
-        </div>
+        </form>
     </div>
     <div class="table-container">
         <table>
