@@ -84,7 +84,7 @@
         @csrf
             <input type="hidden" name="particularDate" value="{{$particularDate->copy()->toDateString()}}">
             <input type="hidden" name="particularUserId" value="{{$userId}}">
-            <button type="submit">CSV出力</button>
+            <button type="submit" style="background-color: #000; color:#FFF">CSV出力</button>
     </form>
 @endsection
 

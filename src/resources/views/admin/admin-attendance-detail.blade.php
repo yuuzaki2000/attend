@@ -74,7 +74,7 @@
                 </table>
             </div>
             <div>
-                <button type="submit">修正</button>
+                <button type="submit" style="background-color: #000; color:#FFF">修正</button>
             </div>        
     </form>
 

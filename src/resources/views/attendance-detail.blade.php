@@ -65,8 +65,8 @@
                 @enderror
             </table>
         </div>
-        <div class="update-button-container">
-            <button class="update-button">修正</button>
+        <div>
+            <button class="update-button" style="background-color: #000; color:#FFF">修正</button>
         </div>
     </form>
 @endsection

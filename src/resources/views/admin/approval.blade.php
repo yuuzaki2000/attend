@@ -69,7 +69,7 @@
                 </table>
             </div>
             <div>
-                <button type="submit">承認</button>
+                <button type="submit" style="background-color: #000; color:#FFF">承認</button>
             </div>        
     </form>
 

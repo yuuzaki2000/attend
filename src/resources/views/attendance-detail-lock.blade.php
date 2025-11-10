@@ -50,7 +50,7 @@
                 </tr>
             </table>
         </div>
-        <div class="update-button-container">
+        <div>
             <div><p>*承認待ちのため修正はできません</p></div>
         </div>
     </form>

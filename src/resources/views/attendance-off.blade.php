@@ -12,7 +12,7 @@
     <div class="button-section">
         <form class="button-section__inner" action="/work/start" method="post">
         @csrf
-            <button class="start-work-button">出勤</button>
+            <button class="start-work-button" style="background-color: #000; color:#FFF">出勤</button>
         </form>
     </div>
 </div>
