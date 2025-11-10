@@ -1,6 +1,6 @@
 #Dockerビルド
 
-git clone git@github.com:yuuzaki2000/freema.git
+git clone git@github.com:yuuzaki2000/attend.git
 
 docker-compose up -d --build
 
