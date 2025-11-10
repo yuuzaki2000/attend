@@ -34,7 +34,9 @@ DB_PASSWORD=laravel_pass
 
 #Permission
 
-chmod -R 777 ./.*
+プロジェクトのディレクトリにて、下記のようなコマンドを実行する
+
+sudo chmod -R 777 src/*
 
 #実行環境 MySQL 8.0.26 PHP 8.1-fpm Laravel 8 nginx 1.21.1
 
