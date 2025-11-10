@@ -41,3 +41,7 @@ https://mailtrap.io/
 .envファイルのMAIL_MAILERからMAIL_ENCRYPTIONまでの項目をコピー＆ペーストしてください。　
 
 MAIL_FROM_ADDRESSは任意のメールアドレスを入力してください。
+
+#管理者ログイン（初期）
+メールアドレス：admin@admin.admin
+パスワード：adminadmin
