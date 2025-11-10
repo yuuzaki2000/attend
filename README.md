@@ -14,11 +14,17 @@ docker-compose up -d --build
 
 .envファイルに以下の環境変数を追加 
 
-DB_CONNECTION=mysql DB_HOST=mysql 　
+DB_CONNECTION=mysql 
 
-DB_PORT=3306 DB_DATABASE=laravel_db 
+DB_HOST=mysql 　
 
-DB_USERNAME=laravel_user DB_PASSWORD=laravel_pass
+DB_PORT=3306 
+
+DB_DATABASE=laravel_db 
+
+DB_USERNAME=laravel_user 
+
+DB_PASSWORD=laravel_pass
 
 アプリケーションキーを作成する php aritsan key:generate
 
