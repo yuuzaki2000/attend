@@ -56,7 +56,7 @@ MAIL_FROM_ADDRESSは任意のメールアドレスを入力してください。
 
 MY_INBOX_URL = (MailtrapのMy InboxのURL)　　　
 
-ex)  https://mailtrap.io/inboxes/********/messages/*************
+ex)  https://mailtrap.io/inboxes/********/messages
 
 #管理者ログイン（初期）
 
