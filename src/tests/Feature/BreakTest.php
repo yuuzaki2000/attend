@@ -288,6 +288,7 @@ class BreakTest extends TestCase
             'start_time' => Carbon::now()->copy()->setTime(12,0,0),
             'end_time' => Carbon::now()->copy()->setTime(13,0,0),
         ]);
+        $response = $this->get('/attendance/list');
         $response->assertSeeText('1:00');
     }
 }
